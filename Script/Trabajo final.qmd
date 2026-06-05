@@ -29,14 +29,46 @@ Al ser el 11° estado con mayor superficie, el estado de Veracruz cuenta con una
 
 ## b) Diagrama de flujo del proceso de construcción de las tablas de vida
 
-## 3. Metodología
-
-### a) Construcción de las Tablas de Vida
+### i) Construcción de las Tablas de Vida
 
 El proceso para la construcción de las tablas de vida se detalla en el siguiente diagrama de flujo:
 
-![Diagrama de flujo detallado del procesamiento de datos para la construcción de tablas de vida, desde la búsqueda de información en INEGI hasta la esperanza de vida final.](diagrama_flujo.png){#fig-diagrama-flujo fig-align="center" width=80%}
+![Diagrama de flujo detallado del procesamiento de datos para la construcción de tablas de vida, desde la búsqueda de información en INEGI hasta la esperanza de vida final.](images/diagrama_flujo.png){#fig-diagrama-flujo fig-align="center" width=80%}
 
+De acuerdo con los requerimientos metodológicos, la tabla de vida completa de causa eliminada para el año 2019 (por sexo) se encuentra estructurada con sus fórmulas actuariales dinámicas dentro del archivo de Excel en la ruta del repositorio: `output/Homicidios, ver.xlsx`.
+
+A continuación, se presentan los análisis gráficos correspondientes al impacto directo de la eliminación de las muertes por homicidio sobre las probabilidades de muerte ($q_x$) y la esperanza de vida restante ($e_x$) en el estado de Veracruz.
+
+::: {#fig-analisis-homicidios layout="[[1,1], [1]]"}
+![Probabilidades de Muerte $q_x$ - Hombres](C:/Users/hecto/OneDrive/Documents/Demografia/images/grafica_qx_homicidios_hombres.png){#fig-qx-h}
+
+![Probabilidades de Muerte $q_x$ - Mujeres](C:/Users/hecto/OneDrive/Documents/Demografia/images/grafica_qx_homicidios_Mujeres.png){#fig-qx-m}
+
+![Comparación de la Esperanza de Vida Restante $e_x$](C:/Users/hecto/OneDrive/Documents/Demografia/images/grafica_ex_homicidios.png){#fig-ex-comp width="65%"}
+
+Impacto demográfico y curvas biométricas tras la exclusión de homicidios en Veracruz, 2019.
+:::
+
+------------------------------------------------------------------------
+
+### Análisis Demográfico y Actuarial de la Causa Eliminada
+
+El análisis de decrementos múltiples para el año 2019 revela el profundo y diferenciado impacto que la violencia (homicidios) ejerce sobre la estructura de la mortalidad según el sexo en la entidad federativa:
+
+#### 1. Ganancia en la Esperanza de Vida al Nacer ($e_0$)
+
+Al revisar los datos de la memoria de cálculo interactiva reflejados en la @fig-ex-comp, la exclusión de los homicidios genera un incremento masivo en la esperanza de vida al nacer de los **hombres**, la cual muestra una ganancia exacta de **1.68 años** (pasando de un nivel observado de **72.63 años** a un nivel teórico de **74.31 años**).
+
+Por el contrario, la población de **mujeres** exhibe una ganancia marginal. Esto evidencia de forma contundente que el fenómeno de la violencia homicida en Veracruz actúa como un choque exógeno que penaliza de manera casi exclusiva a la población masculina.
+
+#### 2. Mitigación del "Efecto Joroba" en Adultos Jóvenes
+
+-   **Población Masculina (@fig-qx-h):** La curva original de los hombres presenta una sobromortalidad joven sumamente marcada (conocida en demografía como *bump* o joroba de mortalidad) entre los 15 y los 40 años de edad. Al eliminar la causa de homicidios, la curva (*línea corregida*) se deprime drásticamente. Por ejemplo, en el grupo de edad de 20 a 24 años, la probabilidad original disminuye sustancialmente, demostrando que el exceso de riesgo en estas edades no obedece a factores biológicos o de desgaste natural, sino a factores del entorno social.
+-   **Población Femenina (@fig-qx-m):** La comparación de las curvas para las mujeres muestra que la línea original y la corregida son prácticamente idénticas a lo largo de todo el ciclo vital. No existe una "joroba" visible en las edades jóvenes, lo que confirma que la estructura de la mortalidad femenina se mantiene gobernada por causas biológicas, crónico-degenerativas y de envejecimiento natural.
+
+#### 3. Comportamiento por Edades Avanzadas
+
+Como se aprecia en la curva de esperanza de vida restante (@fig-ex-comp), la brecha (o ganancia en años de vida) es sumamente ancha en las edades tempranas y se va estrechando paulatinamente conforme se avanza hacia las edades senectas. Esto confirma un comportamiento típicamente actuarial: el homicidio trunca vidas en etapas tempranas (reproductivas y económicamente activas) afectando los años-persona acumulados a edades jóvenes, pero deja de tener un peso estadístico significativo en el desgaste biológico natural de la vejez, donde ambas curvas terminan por converger.
 
 ## c) Fórmulas utilizadas
 
@@ -54,7 +86,7 @@ Para calcular los valores de APV (Años Persona Vividos) usamos las siguientes f
 
 ### ii) Fórmulas de la tabla de vida
 
-Por último para la construcción de las tablas de vida, usamos las siguientes fórmulas, que presentamos con su respectiva definición y fórmula:
+Para la construcción de las tablas de vida, usamos las siguientes fórmulas, que presentamos con su respectiva definición y fórmula:
 
 -   $x$: edad exacta x.
 
@@ -75,6 +107,26 @@ Por último para la construcción de las tablas de vida, usamos las siguientes f
 -   $T_{x}$: número total de años-personas que les resta por vivir a los sobrevivientes de edad exacta x. $$T_{x} = \sum_{i=x}^{\omega} {}_{n}L_{i}$$
 
 -   $e_x^0$: esperanza de vida a la edad exacta x. $$e_x^0 = \frac{T_{x}}{l_{x}}$$
+
+### iii) Fórmulas para la tabla de vida con causa eliminada (Decrementos Múltiples)
+
+Para aislar el impacto epidemiológico y actuarial de una causa exógena específica (en este caso, los homicidios en 2019), se recurre a la teoría de decrementos múltiples para construir una tabla de vida de causa eliminada. Las expresiones matemáticas utilizadas para este procedimiento, basadas en la metodología de Chiang, son:
+
+-   ${}_{n}D_{x}^{i}$: número de defunciones observadas debido a la causa específica $i$ (homicidios) entre las edades $x$ y $x+n$.
+
+-   ${}_{n}q_{x}^{-i}$: probabilidad de fallecer entre las edades $x$ y $x+n$ si se elimina la causa de muerte $i$ de la población. Se calcula asumiendo proporcionalidad en las fuerzas de mortalidad: $${}_{n}q_{x}^{-i} = 1 - \left({}_{n}p_{x}\right)^{\frac{{}_{n}D_{x} - {}_{n}D_{x}^{i}}{{}_{n}D_{x}}}$$
+
+-   ${}_{n}p_{x}^{-i}$: probabilidad de sobrevivir entre las edades $x$ y $x+n$ ante la ausencia de la causa de muerte $i$: $${}_{n}p_{x}^{-i} = 1 - {}_{n}q_{x}^{-i} = \left({}_{n}p_{x}\right)^{\frac{{}_{n}D_{x} - {}_{n}D_{x}^{i}}{{}_{n}D_{x}}}$$
+
+-   $l_{x}^{-i}$: número de sobrevivientes teóricos a la edad exacta $x$ en la tabla de vida con causa eliminada. Partimos del mismo radix inicial ($l_0^{-i} = 100,000$): $$l_{x+n}^{-i} = l_x^{-i} \cdot {}_{n}p_{x}^{-i}$$
+
+-   ${}_{n}d_{x}^{-i}$: número de defunciones teóricas en la cohorte entre las edades $x$ y $x+n$ debido al resto de las causas en ausencia de la causa $i$: $${}_{n}d_{x}^{-i} = l_x^{-i} - l_{x+n}^{-i}$$
+
+-   ${}_{n}L_{x}^{-i}$: número de años-persona vividos entre las edades $x$ y $x+n$ por la cohorte teórica libre de la causa $i$: $${}_{n}L_{x}^{-i} = n \cdot l_{x+n}^{-i} + {}_{n}a_{x} \cdot {}_{n}d_{x}^{-i}$$
+
+-   $T_{x}^{-i}$: número total de años-persona que les resta por vivir a los sobrevivientes de la cohorte teórica a partir de la edad exacta $x$: $$T_{x}^{-i} = \sum_{j=x}^{\omega} {}_{n}L_{j}^{-i}$$
+
+-   $e_x^{-i}$: esperanza de vida restante a la edad exacta $x$ tras haber excluido el riesgo de morir por la causa específica $i$: $$e_x^{-i} = \frac{T_{x}^{-i}}{l_{x}^{-i}}$$
 
 ## d) Código usado para los cálculos
 
@@ -390,8 +442,7 @@ par(mfrow = c(1, 1))
 
 ## g) Análisis de resultados y particularidades
 
-**Tendencia histórica (2010 - 2019)**
-Entre 2010 y 2019, la esperanza de vida al nacer ($e_0$) en Veracruz muestra una dinámica coherente con el patrón demográfico nacional, caracterizada por avances paulatinos pero enfrentando el reto del envejecimiento poblacional. Las mujeres presentan de forma sistemática una esperanza de vida superior a la de los hombres. Esta brecha de género refleja:
+**Tendencia histórica (2010 - 2019)** Entre 2010 y 2019, la esperanza de vida al nacer ($e_0$) en Veracruz muestra una dinámica coherente con el patrón demográfico nacional, caracterizada por avances paulatinos pero enfrentando el reto del envejecimiento poblacional. Las mujeres presentan de forma sistemática una esperanza de vida superior a la de los hombres. Esta brecha de género refleja:
 
 • Menor exposición a mortalidad por causas externas (accidentes, homicidios y violencia, fuertemente concentrados en la población masculina).
 
@@ -401,29 +452,113 @@ Entre 2010 y 2019, la esperanza de vida al nacer ($e_0$) en Veracruz muestra una
 
 Al analizar las curvas de defunciones ($D_x$) y sobrevivientes ($l_x$), se observan características muy específicas de la entidad:
 
- **Volumen y movilidad:**
-Al ser un estado con más de 8 millones de habitantes y marcados contrastes socioeconómicos, existe una constante migración interna de la zona norte (con mayor pobreza marginal) hacia los polos de desarrollo en el centro y sur, lo que concentra los riesgos de mortalidad y satura los servicios de salud en zonas urbanas específicas.
+**Volumen y movilidad:** Al ser un estado con más de 8 millones de habitantes y marcados contrastes socioeconómicos, existe una constante migración interna de la zona norte (con mayor pobreza marginal) hacia los polos de desarrollo en el centro y sur, lo que concentra los riesgos de mortalidad y satura los servicios de salud en zonas urbanas específicas.
 
- **Bono demográfico vs. Perfil epidemiológico:** 
-Aunque la edad mediana es relativamente joven (31 años), Veracruz presenta una vulnerabilidad crítica ante enfermedades crónico-degenerativas. El estado lidera la tasa bruta de mortalidad por diabetes (130.8 fallecimientos por cada 100,000 habitantes, superando ampliamente la media nacional de 86.6), a lo que se suman enfermedades del corazón, tumores malignos y padecimientos del hígado. Esta severa carga de morbilidad genera un alto volumen de defunciones prematuras.
+**Bono demográfico vs. Perfil epidemiológico:** Aunque la edad mediana es relativamente joven (31 años), Veracruz presenta una vulnerabilidad crítica ante enfermedades crónico-degenerativas. El estado lidera la tasa bruta de mortalidad por diabetes (130.8 fallecimientos por cada 100,000 habitantes, superando ampliamente la media nacional de 86.6), a lo que se suman enfermedades del corazón, tumores malignos y padecimientos del hígado. Esta severa carga de morbilidad genera un alto volumen de defunciones prematuras.
 
 **Impacto de la COVID-19 en 2021**
 
-Al observar las gráficas y los cuadros de 2021, se evidencia una ruptura drástica y sin precedentes en la tendencia histórica, la alta prevalencia de comorbilidades (especialmente la diabetes y enfermedades cardíacas crónicas) actuó como un potente catalizador para la letalidad de la COVID-19 en la población veracruzana.
- En las gráficas en escala logarítmica, esto se refleja visualmente en:
- 
-  • Un levantamiento atípico de las curvas de tasas centrales de mortalidad ($m_x$) y probabilidades de muerte ($q_x$) en los grupos de edades adultas (a partir de los 40 y 50 años).
-  
-  • Una caída pronunciada de la curva de sobrevivientes ($l_x$) a edades más tempranas en comparación con 2019.
-  
-  • Una fuerte reducción de la esperanza de vida al nacer ($e_0$) respecto a la observada en 2019. Este retroceso fue notoriamente más profundo en los hombres, ensanchando la brecha de género en la mortalidad durante este año.
-  
+Al observar las gráficas y los cuadros de 2021, se evidencia una ruptura drástica y sin precedentes en la tendencia histórica, la alta prevalencia de comorbilidades (especialmente la diabetes y enfermedades cardíacas crónicas) actuó como un potente catalizador para la letalidad de la COVID-19 en la población veracruzana. En las gráficas en escala logarítmica, esto se refleja visualmente en:
+
+• Un levantamiento atípico de las curvas de tasas centrales de mortalidad ($m_x$) y probabilidades de muerte ($q_x$) en los grupos de edades adultas (a partir de los 40 y 50 años).
+
+• Una caída pronunciada de la curva de sobrevivientes ($l_x$) a edades más tempranas en comparación con 2019.
+
+• Una fuerte reducción de la esperanza de vida al nacer ($e_0$) respecto a la observada en 2019. Este retroceso fue notoriamente más profundo en los hombres, ensanchando la brecha de género en la mortalidad durante este año.
+
 En términos demográficos, la pandemia representó un choque exógeno severo que, combinado con la epidemia previa de enfermedades metabólicas en el estado, generó un exceso de mortalidad crítico, alterando temporalmente la estructura de defunciones.
 
 **Conclusiones**
 
 • La metodología demográfica aplicada (cálculo de Años Persona Vividos, conversión a probabilidades $q_x$ y construcción de tablas de vida) demostró ser robusta para obtener indicadores coherentes que visibilizan el comportamiento de la mortalidad por sexo y año en la entidad.
 
-•  Las particularidades de Veracruz —su gran tamaño poblacional, la migración interna por desigualdad y, de manera crítica, su alarmante tasa de mortalidad por diabetes— son factores determinantes en sus niveles de supervivencia.
+• Las particularidades de Veracruz —su gran tamaño poblacional, la migración interna por desigualdad y, de manera crítica, su alarmante tasa de mortalidad por diabetes— son factores determinantes en sus niveles de supervivencia.
 
 • La pandemia de COVID-19 en 2021 tuvo un impacto devastador, elevando sustancialmente la mortalidad en edades productivas y avanzadas, y contrayendo la esperanza de vida, dejando en evidencia la vulnerabilidad sanitaria de la población veracruzana frente a crisis epidemiológicas.
+
+
+
+Punto c:
+Demostración de la Tasa de Reemplazo.
+
+Para comprender que es la Tasa de Reemplazo Poblacional, primero hay que comenzar analizando las tasas de fecundidad, y es que mientras los países siguen desarrollandose, las tasas de fecundidad tienden a las tasas de reemplazo.
+
+Empecemos con la Tasa Neta de Reproducción (TNR/NRR)
+
+La TNR está definida como el número promedio de hijas que tendrá una cohorte de mujeres a lo largo de su vida, sin embargo, a diferencia de la Tasa de Fecundidad Total, la TNR toma en cuenta los factores de fallecimientos de mujeres; ajusta las cuentas considerando a las mujeres que han fallecido antes de llegar a una edad suficiente para tener hijos.
+
+Por otra parte, para la TNR existe un umbral que indica la variación de la población dependiendo de su resultado.
+
+→ Una TNR de exactamente 1 sugiere que cada madre está siendo reemplazada por una única hija, y por lo tanto que la población se mantiene igual.
+
+→ Si la TNR > 1, la población está creciendo, esto se interpreta como que existe más de una hija que ocupará el lugar de la madre en la siguiente generación.
+
+→ De tener una TNR < 1, se sigue que no hay "suficientes hijas" para reemplazar a cada madre en la siguiente cohorte, por lo que reflejaría una disminución en la población.
+
+La fórmula para calcular la TNR está dada por:
+
+$$NRR = \sum_{x=\alpha}^{\beta} {}_{n}f_{x}^{F} \cdot \frac{{}_{n}L_{x}^{F}}{l_{0}^{F}}$$
+
+En donde:
+
+$\alpha$ = El inicio de la edad reproductiva de una mujer, normalmente se toma $\alpha$ = 15
+
+$\beta$ = El final de la edad reproductiva de una mujer, normalmente se toma $\beta$ = 49
+
+${}_{n}f_{x}^{F}$ = La tasa de fecundidad específica por edades de mujeres (superíndice $F$: Female) desde la edad $x$ hasta la edad $x+n$
+
+${}_{n}L_{x}^{F}$ = Años persona vividos por mujeres desde la edad $x$ hasta la edad $x+n$
+
+$l_{0}^{F}$ = Cantidad inicial de mujeres nacidas
+
+A partir de ello, se puede utilizar una aproximación de la TNR, en donde:
+
+$$TNR \approx p(A) GRR$$
+
+En donde:
+
+→ $p(A)$ = Probabilidad de que una mujer sobreviva desde el nacimiento hasta la edad media de fecundidad (también se puede encontrar como $\ell(\bar{m})$)
+
+→ GRR = Tasa bruta de reproducción: Medida que indica el número promedio de hijas que tendría una mujer a lo largo de su vida fértil, sin suponer mortalidad antes del periodo reproductivo.
+
+Ahora, la GRR está dada por:
+
+$$GRR = n \sum_{x=\alpha}^{\beta} {}_{n}f_{x}^{F}$$
+
+Con $n$ = La amplitud del intervalo de los grupos de edad, se suelen usar periodos quinquenales ($n = 5$).
+
+Ahora, conectamos la reproducción (solo niñas) con la Tasa Global de Fecundidad (TGF), que toma en cuenta todos los nacimientos (niños y niñas). Para ello, tomamos la siguiente relación:
+
+$$TGF = GRR(1 + SRB)$$
+
+En donde SRB es la proporción de sexos al nacer, dada por el número de varones al nacer por cada 100 niñas.
+
+Si despejamos la GRR de nuestra aproximación anterior ($GRR = \frac{NRR}{p(A)}$) y la sustituimos en la ecuación de la TGF, obtenemos la fórmula general:
+
+$$TGF = \frac{NRR}{p(A)} (1 + SRB)$$
+
+Finalmente, evaluamos la ecuación considerando que la población debe mantenerse igual (NRR = 1) e introduciendo las constantes demográficas:
+
+$$SRB \approx 1.0366$$
+
+(nacen aproximadamente 104 niños por cada 100 niñas).
+
+$$ p(A) \approx 0.98$$ (el 98% de las mujeres sobreviven hasta la edad media de la maternidad).
+
+Al sustituir estos valores:
+
+$$TGF = \frac{1}{0.98} \cdot (1 + 1.0366) = \frac{2.0366}{0.98} = 2.078 \approx 2.1$$
+
+Así, se demuestra que se requieren aproximadamente 2.1 hijos por mujer para garantizar que al menos una hija sobreviva para reemplazar a la madre en la siguiente generación.
+
+Fuentes:
+
+Consejo Nacional de Población [CONAPO]. (2023). Proyecciones de la Población de México y de las Entidades Federativas, 2020-2070. Gobierno de México.
+
+Instituto Nacional de Estadística y Geografía [INEGI]. (2025). Estadística de Nacimientos Registrados (ENR). Aguascalientes, México.
+
+https://askfilo.com/user-question-answers-smart-solutions/what-is-the-formula-of-nrr-3230373733333939
+
+https://energyeducation.ca/encyclopedia/Population_replacement_rate
+
+https://www.youtube.com/watch?v=JdHCQZsVfmc&t=3s
