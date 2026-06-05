@@ -33,4 +33,34 @@ El proyecto se encuentra organizado de acuerdo con las mejores prácticas de ges
 │   └── curvas_tefe_2019.png              # Curvas de Tasas Específicas de Fecundidad comparadas
 ├── output/                               # Entregables finales para el cliente
 │   └── Reporte_Final_Demografia.pdf      # Informe actuarial definitivo compilado
+
+## Metodología y Alcance del Informe
+
+El informe final consolidado en `output/Reporte_Final_Demografia.pdf` cubre los siguientes cinco ejes fundamentales requeridos:
+
+### a) Tablas de Vida Definitivas e Inclusión de Observaciones
+* **Flujo Metodológico:** Incorporación de un diagrama de flujo corregido utilizando la notación geométrica estándar (óvalos para Inicio/Fin, rectángulos para procesos de cálculo de $m_x, q_x, l_x, d_x, L_x, T_x, e_x$).
+* **Modelado Matemático y Código:** Documentación explícita de todas las fórmulas de crecimiento exponencial intercensal, prorrateo multiplicativo y relaciones actuariales de la tabla de vida, junto con el código definitivo en R para su total replicabilidad.
+* **Resultados Integrados:** Inclusión de las tablas de vida completas dentro del texto y un cuadro resumen con las esperanzas de vida al nacer ($e_0$) por sexo para analizar el severo choque exógeno de la pandemia de COVID-19 en 2021.
+
+### b) Tabla de Vida de Causa Eliminada (Homicidios 2019)
+* Modelado a través de decrementos múltiples en donde se aísla el impacto de la violencia en Veracruz para el año 2019.
+* El archivo dinámico interactivo con las fórmulas vivas se localiza en `data/Homicidios_ver.xlsx`. El informe PDF despliega exclusivamente el análisis demográfico profundo apoyado por las tres gráficas de la carpeta `images/` que contrastan el comportamiento de las curvas de mortalidad por sexo a escala logarítmica.
+
+### c) Demostración Matemática del Reemplazo Poblacional
+* Documentación formal y desarrollo algebraico de la demostración analítica que fundamenta por qué la **Tasa de Reemplazo Estándar es igual a 2.1** bajo condiciones demográficas contemporáneas (considerando la razón de masculinidad al nacer y las probabilidades de supervivencia materna).
+
+### d) Evolución de Indicadores de Fecundidad (2010 vs. 2019)
+* Estimación y análisis comparativo para Veracruz de los siguientes indicadores macro-demográficos:
+  * **TGF:** Tasa Global de Fecundidad (número promedio de hijos por mujer).
+  * **TBR:** Tasa Bruta de Reproducción (promedio de hijas nacidas por mujer).
+  * **TNR:** Tasa Neta de Reproducción (hijas promedio que sobrevivirán hasta la edad reproductiva de la madre).
+
+### e) Análisis Comparativo Internacional de las TEFE (2019)
+* Graficación y análisis de las **Tasas Específicas de Fecundidad (TEFE)** por grupos quinquenales de edad para el año 2019, contrastando de forma simultánea la estructura de la fecundidad de:
+  1. El estado de **Veracruz**.
+  2. El contexto nacional (**México**).
+  3. El país seleccionado para la comparación internacional.
 └── README.md                             # Portada de presentación del repositorio
+
+de la fecundidad de:El estado de Veracruz.El contexto nacional (México).El país seleccionado para la comparación internacional.
