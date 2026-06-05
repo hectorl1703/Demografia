@@ -1,0 +1,141 @@
+
+# Problema 5
+
+rm(list = ls(all.names = TRUE))
+gc()
+
+datos <- read.csv("C:/Users/hecto/OneDrive/Documents/Tar2-5.csv")
+#Ajustar ruta
+
+# Cambiar la variable de tratamiento a factor y que el Control sea nuestra categoría de referencia.
+datos$Trat <- as.factor(datos$Trat)
+datos$Trat <- relevel(datos$Trat, ref = "Control") 
+
+# i. Análisis descriptivo
+library(ggplot2)
+
+ggplot(datos, aes(x = Edad, y = Ant, color = Trat)) +
+  geom_point(size = 2, alpha = 0.7) +
+  geom_smooth(method = "lm", se = FALSE) + 
+  labs(title = "Generación de anticuerpos por Edad y Tratamiento",
+       x = "Edad (años)",
+       y = "Total de Anticuerpos") +
+  theme_minimal()
+
+#En el gráfico de dispersión podemos ver la relación entre la edad y la cantidad de anticuerpos generados, al principio se nota una tendencia lineal en ambos grupos y la línea de tendencia del grupo con medicamento parece tener una inclinación mucho más reducida a la del grupo control, lo que nos da una pista de que la edad podría estar afectando de manera distinta dependiendo de si tomaron el medicamento o no."
+
+# ii. Ajuste del modelo con interacción
+
+# Ajustamos el modelo incluyendo la edad, el tratamiento y la interacción entre ambos.
+fit5 <- lm(Ant ~ Edad * Trat, data = datos)
+summary(fit5)
+
+#Residuals:
+#  Min      1Q  Median      3Q     Max 
+# -6.6211 -1.9539  0.0277  1.6018  7.0063 
+
+# Coefficients:
+#              Estimate Std. Error t value Pr(>|t|)    
+#(Intercept)  27.34298    0.57573  47.493  < 2e-16 ***
+#  Edad         -0.28290    0.01440 -19.645  < 2e-16 ***
+#  TratMed      -4.25730    0.96763  -4.400 1.51e-05 ***
+#  Edad:TratMed  0.18307    0.02437   7.512 6.94e-13 ***
+
+# Ajustamos un modelo de Análisis de Covarianza (ANCOVA) que se ve así: y_i = beta_0 + beta_1(Edad) + beta_2(Trat) + beta_3(Edad * Trat) + error, donde Trat = 0 si el paciente está en el grupo control y Trat = 1 si recibió el medicamento
+
+
+# iii. Expresiones de la generación promedio
+
+
+# Sabiendo que la esperanza del modelo es E(y), sacamos las expresiones para cada grupo:
+
+# a) Para el grupo control (Trat = 0):
+#    E(y | Trat=0) = beta_0 + beta_1(Edad) + beta_2(0) + beta_3(Edad*0)
+#    E(y | Trat=0) = beta_0 + beta_1(Edad)
+
+# b) Para el grupo que recibe el medicamento (Trat = 1):
+#    E(y | Trat=1) = beta_0 + beta_1(Edad) + beta_2(1) + beta_3(Edad*1)
+#    E(y | Trat=1) = (beta_0 + beta_2) + (beta_1 + beta_3) * Edad
+
+
+# iv. ¿La edad afecta de la misma forma en ambos grupos?
+
+
+
+# Para saber si la edad afecta igual a ambos grupos, tenemos que revisar si las pendientes de nuestras dos rectas son iguales. En términos de nuestros parámetros, la hipótesis a contrastar es sobre el término de interacción (beta_3):
+
+# H0: beta_3 = 0  (Las pendientes son iguales, la edad afecta igual a ambos grupos)
+# Ha: beta_3 != 0 (Las pendientes son distintas, la edad no afecta igual)
+
+# Notese el p-value del término 'Edad:Trat' en el summary del modelo.
+# Como el p-value es menor a 0.05, rechazamos H0, por lo tanto, concluimos que la edad si afecta de la misma forma a la generación de anticuerpos en ambos grupos.
+
+
+# v. Interpretación de coeficientes
+
+
+# Tomando como referencia al grupo Control, interpretamos las betas estimadas así:
+
+#  beta_0 (Intercepto): Es el promedio esperado de anticuerpos para un paciente del grupo control que tuviera 0 años.
+#  beta_1 (Edad): Manteniendo el tratamiento en control como constante, por cada año que aumenta la edad del paciente, se espera un cambio en los anticuerpos de beta_1 unidades.
+#  beta_2 (Tratamiento): Es la diferencia promedio de anticuerpos entre tomar el medicamento y no tomarlo, cuando el paciente tiene exactamente 0 años.
+#  beta_3 (Interacción Edad:Trat): Representa la diferencia entre las pendientes. Nos dice cuánto cambia el efecto de la edad al haber tomado el medicamento en lugar del placebo.
+
+# vi. Argumento sobre pacientes entre 30 y 60 años
+
+library(multcomp)
+
+# La empresa dice que el medicamento sirve para CUALQUIER edad entre 30 y 60 y la diferencia (Efecto del medicamento) a una edad "x" es: Efecto = beta_2 + beta_3(x)
+# Si se prueba que el efecto es  positivo tanto en el límite inferior (30) y superior (60), entonces se cumple para todo el rango.
+
+# Matriz para evaluar la combinación lineal en las edades 30 y 60:
+# (Las columnas son: intercepto, Edad, Trat, Edad:Trat)
+C <- matrix(c(
+  0, 0, 1, 30,  # Queremos probar si beta_2 + 30*beta_3 > 0
+  0, 0, 1, 60   # Queremos probar si beta_2 + 60*beta_3 > 0
+), nrow = 2, byrow = TRUE)
+rownames(C) <- c("Efecto a los 30 años", "Efecto a los 60 años")
+
+prueba_edades <- glht(fit5, linfct = C, alternative = "greater")
+summary(prueba_edades)
+
+#                          Estimate Std. Error t value    Pr(>t)    
+# Efecto a los 30 años <= 0   1.2349     0.3680   3.356    0.000894 ***
+#  Efecto a los 60 años <= 0   6.7271     0.6353  10.588  < 1e-10 ***
+#  Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+# Si la empresa no miente, necesitamos verificar si la diferencia de anticuerpos entre usar el medicamento y usar el placebo es mayor a cero para todo el rango de 30 a 60 años. Esto se puede confirmar analizando los dos extremos del rango 
+
+
+# "Al ver los p-valores ajustados para 30 y 60 años, dado que ambos son menores al valor de 0.05, se concluye la afirmación de la empresa. Tenemos evidencia estadística para asegurar que el medicamento aumenta el número de anticuerpos en todos los pacientes de ese rango de edad."
+
+# Gráficos adicionales
+# Gráfico 1: Bandas de Confianza
+
+#Este grafico incluye bandas sombreadas que representan el intervalo de confianza del 95% para la línea de tendencia.
+grafico_banda <- ggplot(datos, aes(x = Edad, y = Ant, color = Trat, fill = Trat)) +
+  geom_point(size = 2, alpha = 0.5) +
+  geom_smooth(method = "lm", se = TRUE, alpha = 0.2) + 
+  labs(title = "Tendencia de Anticuerpos con Bandas de Confianza al 95%",
+       x = "Edad (años)",
+       y = "Total de Anticuerpos") +
+  theme_minimal()
+
+print(grafico_banda)
+
+#Las bandas de confianza nos permiten observar el rango en el que se encuentra la media poblacional
+
+# Gráficos 2 a 5: Diagnóstico de Residuales
+
+# En ANCOVA, para validar los supuestos de normalidad y homocedasticidad se hicieron los siguentes gráficos:
+
+par(mfrow = c(2, 2)) 
+
+# 1. Linealidad y Varianza
+# 2. Normalidad de los errores
+# 3. Homocedasticidad
+# 4. Valores atípicos o influyentes
+plot(fit5) 
+
+par(mfrow = c(1, 1)) 
+

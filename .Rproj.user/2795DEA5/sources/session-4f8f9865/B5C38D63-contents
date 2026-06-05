@@ -1,5 +1,5 @@
 ---
-title: "Trabajo Final Demografía - Versión Preliminar"
+title: "Trabajo Final Demografía"
 author: 
   - "Monsalvo Velázquez Naomi Adai"
   - "López Domínguez Héctor"
@@ -7,7 +7,7 @@ format: pdf
 editor: visual
 ---
 
-# Trabajo final Preliminar
+# Trabajo final
 
 ## Monsalvo Velázquez Naomi Adai & López Domínguez Héctor
 
@@ -97,44 +97,73 @@ Para terminar la construccion de las tablas de vida por año y sexo, usamos la f
 ```{r}
 #\| echo: true 
 rm(list = ls())
+library(data.table)
+library(knitr)
+library(kableExtra)
+
+#Definimos las función de la tabla de vida
 lt_abr <- function(x, mx, sex="f", IMR=NA) {
-  
   m <- length(x)
   n <- c(diff(x), NA)
   ax <- n/2
-  
   if (sex == "m") {
-    if (mx[1] >= 0.107) { 
-      ax[1] <- 0.330 
-    } else {  
+    if (mx[1] >= 0.107) {
+      ax[1] <- 0.330
+    } else {
       ax[1] <- 0.045 + 2.684 * mx[1]
     }
   } else if (sex == "f") {
-    if (mx[1] >= 0.107) { 
-      ax[1] <- 0.350 
+    if (mx[1] >= 0.107) {
+      ax[1] <- 0.350
     } else {
       ax[1] <- 0.053 + 2.800 * mx[1]
     }
   }
-  
-  qx <- (n * mx) / (1 + (n - ax) * mx) 
+  qx <- (n * mx) / (1 + (n - ax) * mx)
   qx[m] <- 1
-  
   px <- 1 - qx
-  
   lx <- 100000 * cumprod(c(1, px[-m]))
-  
   dx <- c(-diff(lx), lx[m])
-  
   Lx <- n * c(lx[-1], 0) + ax * dx
   Lx[m] <- lx[m] / mx[m]
-  
   Tx <- rev(cumsum(rev(Lx)))
-  
   ex <- Tx / lx
-
   return(data.table(x, n, mx, ax, qx, px, lx, dx, Lx, Tx, ex))
 }
+
+#Leemos los datos
+apv <- fread("Data/APV_2010-2019-2021.csv")
+Dx <- fread("Data/Deaths_Ver_2010-2019-2021.csv")
+
+#Calculamos las 6 tablas de vida
+lt_2010_h <- lt_abr(apv[year==2010, x], Dx[year==2010, Dx_h]/apv[year==2010, N_h], sex = "m")
+lt_2010_m <- lt_abr(apv[year==2010, x], Dx[year==2010, Dx_m]/apv[year==2010, N_m], sex = "f")
+lt_2019_h <- lt_abr(apv[year==2019, x], Dx[year==2019, Dx_h]/apv[year==2019, N_h], sex = "m")
+lt_2019_m <- lt_abr(apv[year==2019, x], Dx[year==2019, Dx_m]/apv[year==2019, N_m], sex = "f")
+lt_2021_h <- lt_abr(apv[year==2021, x], Dx[year==2021, Dx_h]/apv[year==2021, N_h], sex = "m")
+lt_2021_m <- lt_abr(apv[year==2021, x], Dx[year==2021, Dx_m]/apv[year==2021, N_m], sex = "f")
+
+# L edamos estilo a la tabla 
+imprimir_tabla_vida <- function(tabla, titulo) {
+  kable(tabla, 
+        digits = c(0, 0, 5, 3, 5, 5, 0, 0, 0, 0, 2), 
+        col.names = c("x", "n", "mx", "ax", "qx", "px", "lx", "dx", "Lx", "Tx", "ex"),
+        caption = titulo,
+        align = "c",
+        format = "latex", 
+        booktabs = TRUE) |>
+    kable_styling(latex_options = c("scale_down", "HOLD_position"),
+                  position = "center") |>
+    row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
+}
+
+#Imprimimos las tablas 
+imprimir_tabla_vida(lt_2010_h, "Tabla de Mortalidad - Hombres Veracruz 2010")
+imprimir_tabla_vida(lt_2010_m, "Tabla de Mortalidad - Mujeres Veracruz 2010")
+imprimir_tabla_vida(lt_2019_h, "Tabla de Mortalidad - Hombres Veracruz 2019")
+imprimir_tabla_vida(lt_2019_m, "Tabla de Mortalidad - Mujeres Veracruz 2019")
+imprimir_tabla_vida(lt_2021_h, "Tabla de Mortalidad - Hombres Veracruz 2021")
+imprimir_tabla_vida(lt_2021_m, "Tabla de Mortalidad - Mujeres Veracruz 2021")
 
 ```
 
@@ -197,6 +226,28 @@ kable(cuadro_e0,
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), 
                 full_width = FALSE, 
                 position = "center") |>
+  row_spec(0, bold = TRUE, color = "white", background = "#2C3E50") |> 
+  column_spec(1, bold = TRUE)
+# Extraemos la esperanza de vida al nacer (x=0) de las tablas previamente calculadas
+e0_2010_h <- lt_2010_h$ex[1]
+e0_2010_m <- lt_2010_m$ex[1]
+e0_2019_h <- lt_2019_h$ex[1]
+e0_2019_m <- lt_2019_m$ex[1]
+e0_2021_h <- lt_2021_h$ex[1]
+e0_2021_m <- lt_2021_m$ex[1]
+
+cuadro_e0 <- data.frame(
+  Anio = c(2010, 2019, 2021),
+  Hombres = c(e0_2010_h, e0_2019_h, e0_2021_h),
+  Mujeres = c(e0_2010_m, e0_2019_m, e0_2021_m)
+)
+
+colnames(cuadro_e0) <- c("Año", "Hombres", "Mujeres")
+
+kable(cuadro_e0, 
+      caption = "Esperanza de Vida al Nacer (e0) en Veracruz por Sexo y Año", 
+      align = 'c', format = "latex", booktabs = TRUE) |>
+  kable_styling(latex_options = c("HOLD_position"), position = "center") |>
   row_spec(0, bold = TRUE, color = "white", background = "#2C3E50") |> 
   column_spec(1, bold = TRUE)
 ```
