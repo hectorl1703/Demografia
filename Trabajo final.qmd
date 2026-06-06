@@ -437,6 +437,17 @@ A continuación, se presentan los análisis gráficos correspondientes al impact
 
 # b)Tabla de vida de Causa Eliminada
 
+Para la construcción de la tabla de vida de causa eliminada para el estado de Veracruz (2019) realizamos un procesamiento a partir de las bases de datos oficiales y la aplicación de métodos de decrementos múltiples.
+
+El proceso se realizo a partir de las siguientes etapas: 
+
+1. **Extracción y agrupación:** Se descargaron los registros de defunciones generales y defunciones por homicidios del INEGI, estructurándolos por grupos quinquenales de edad y sexo mediante el uso de tablas dinámicas. 
+
+2. **Doble Prorrateo:** Se realizo el prorrateo de las defunciones con "Edad no especificada" entre todos los grupos quinquenales, garantizando que no se perdiera ningún evento del universo total. 
+
+3. **Método de Chiang (Causa Eliminada):** Partiendo de las tablas de vida base generadas mediante R en nuestro inciso a, se calculó la proporción de defunciones por homicidios sobre el total de muertes para cada grupo de edad. Esta proporción se utilizó para "extraer" el efecto de los homicidios de la probabilidad de muerte original ($q_x$), generando las nuevas probabilidades libres de homicidios ($q_x^{-i}$) y recalculamos toda la estructura de la tabla
+Toda la memoria de cálculo, las fórmulas actuariales dinámicas y el prorrateo detallado se encuentran en el archivo de Excel alojado en la carpeta `data` de nuestro repositorio de GitHub en la siguiente ruta: `data/Tabla de vida Causa eliminada.xlsx`.
+
 ::: {#fig-analisis-homicidios layout="[[1,1], [1]]"}
 ![Probabilidades de Muerte $q_x$ - Hombres](C:/Users/hecto/OneDrive/Documents/Demografia/images/grafica_qx_homicidios_hombres.png){#fig-qx-h}
 
@@ -581,6 +592,9 @@ Tasa Neta de Reproducción (TNR): Al ajustar las cuentas considerando a las muje
 ## Conclusión
 
 Los resultados de este modelo confirman la severa vulnerabilidad demográfica de Veracruz. La entidad exhibe un truncamiento prematuro de su fecundidad que le impide alcanzar los niveles de reemplazo biológico de la nación. Esto deja en evidencia que el estado requerirá de un análisis profundo sobre el futuro de su estructura de edades, ya que una base poblacional cada vez más estrecha (menos nacimientos) deberá sostener a los grupos de edad avanzada en las próximas décadas.
+
+![Graficas de fecundidad](C:\Users\hecto\OneDrive\Documents\Demografia\images\graficas_fecundidad.png)
+
 
 # e) Tasas específicas de fecundidad
 
