@@ -1,0 +1,678 @@
+---
+title: "Trabajo Final Demografía"
+author: 
+  - "Monsalvo Velázquez Naomi Adai"
+  - "López Domínguez Héctor"
+format: pdf
+editor: visual
+---
+
+## a)Observaciones comentadas
+
+## Presentación
+
+Este documento describirá y dará a conocer el contexto, la construcción de las tablas de vida y un análisis a detalle del estado de Veracruz de Ignacio de la Llave durante los años 2010, 2019 y 2021. Se comenzará por dar un contexto sobre la población de la entidad, que eventos la han alterado, sus características demográficas; a partir de allí se darán fórmulas, tablas de vida, cuadros de esperanzas, código para los cálculos que permitirán observar este contexto desde un unto de vista estadístico. Finalmente, un análisis de datos será hecho, haciendo un énfasis en el impacto observado durante la pandemia de COVID-19 en la mortalidad y la esperanza de vida de la región.
+
+## I) Breve contexto de la entidad federativa
+
+Al ser el 11° estado con mayor superficie, el estado de Veracruz cuenta con una gran población. Según el Censo de Población de 2020, 8,062,579 personas habitan en los 71,823.5 km² de extensión territorial,una tasa de crecimiento de 5.49% respecto a los 7,643,194 habitantes que se obtuvieron en 2010. Esta tasa evidencia un gran crecimiento poblacional, sin embargo, en tiempos recientes se han llegado a estimar tasas negativas de crecimiento para años venideros. Existen distintos motivos para ambas ocurriencias:
+
+• Algunas de las ciudades más desarrolladas han recibido migrantes de otros estados y/o países, como lo pueden ser Xalapa, Córdoba, COatzacoalcos, Boca del Río, etc.
+
+• Por otro lado, principalmente en la zona norte existe una pobreza marginal, contrastada con ciudades que se encuentran mayoritariamente en el sur, provocando que habitantes del área norte se dirijan hacia el sur, manteniendo el flujo de gente en el mismo estado.
+
+• La edad media de la población, según el censo del INEGI es de 31 años, esto provoca que la esperanza de vida suba, pero a su vez, haya una cantidad mayor de mortalidad en un periodo de tiempo reducido, generando la ya mencionada tasa negativa de decrecimiento.
+
+• Relacionado con el punto anterior, las muertes más comunes en el estado para ambos sexos incluyen enfermedades de corazón, diabetes, tumores malignos y enfermedades de hígado, más comunes en personas de edad avanzada, liderando en la tasa bruta de mortalidad por diabetes por cada 100000 habitantes, donde Veracruz, con 130.8 fallecimientos supera con creces a la media nacional, de 86.6.
+
+## II) Diagrama de flujo del proceso de construcción de las tablas de vida
+
+### i) Construcción de las Tablas de Vida
+
+El proceso para la construcción de las tablas de vida se detalla en el siguiente diagrama de flujo:
+
+![Diagrama de flujo detallado del procesamiento de datos para la construcción de tablas de vida, desde la búsqueda de información en INEGI hasta la esperanza de vida final.](images/diagrama_flujo.png){#fig-diagrama-flujo fig-align="center" width=80%}
+
+
+## III) Fórmulas utilizadas
+
+### i) Fórmulas del crecimiento exponencial
+
+Para calcular los valores de APV (Años Persona Vividos) usamos las siguientes formulas:
+
+1.  *Diferencial de tiempo entre censos (*$dt$):$$dt = t_T - t_0$$ Donde $t_T$ y $t_0$ son las fechas exactas (en formato decimal) de los censos final e inicial que en nuestro caso fueron 2010 y 2020
+
+2.  *Tasa de crecimiento exponencial intercensal (*$r$): $$r = \frac{\ln\left(\frac{N_T}{N_0}\right)}{dt}$$ Donde $N_T$ es la población total del grupo de edad en el censo reciente y $N_0$ es la población en el censo base
+
+3.  *Fracción de tiempo a proyectar/interpolar (*$h$): $$h = t - t_0$$ Representa el tiempo transcurrido desde el censo base ($t_0$) hasta la fecha exacta de estimación deseada $t$, normalmente es a mitad de año.
+
+4.  *Años Persona Vividos(*$N_h$): $$N_h = N_0 \cdot e^{r \cdot h}$$ Esta población estimada ($N_h$) nos indica el total de Años-Persona Vividos (${}{n}N{x}$) utilizados como denominador para las tasas de mortalidad de los años 2019 y 2021.
+
+### ii) Fórmulas de la tabla de vida
+
+Para la construcción de las tablas de vida, usamos las siguientes fórmulas, que presentamos con su respectiva definición y fórmula:
+
+-   $x$: edad exacta x.
+
+-   ${}_{n}m_{x}$: tasas específicas de mortalidad entre las edades x y x + n. $${}_{n}m_{x} = \frac{{}_{n}D_{x}}{{}_{n}N_{x}}$$
+
+-   ${}_{n}a_{x}$: promedio de años-persona vividos por aquellos que murieron entre las edades x y x + n. Para la mayoría de los grupos de edad, se asume una distribución uniforme de las defunciones: $${}_{n}a_{x} = \frac{n}{2}$$
+
+-   ${}_{n}q_{x}$: probabilidad de fallecer entre las edades x y x + n. $${}_{n}q_{x} = \frac{n \cdot {}_{n}m_{x}}{1 + (n - {}_{n}a_{x}) \cdot {}_{n}m_{x}}$$
+
+-   ${}_{n}p_{x}$: probabilidad de sobrevivir entre las edades x y x + n. $${}_{n}p_{x} = 1 - {}_{n}q_{x}$$
+
+-   $l_{x}$: número de sobrevivientes en la edad x. Partimos de un radix para la edad inicial de $l_0 = 100,000$. $$l_{x+n} = l_x \cdot {}_{n}p_{x}$$
+
+-   ${}_{n}d_{x}$: número de defunciones entre las edades x y x + n. $${}_{n}d_{x} = l_x - l_{x+n}$$
+
+-   ${}_{n}L_{x}$: número de años-persona vividos entre las edades x y x + n. $${}_{n}L_{x} = n \cdot l_{x+n} + {}_{n}a_{x} \cdot {}_{n}d_{x}$$
+
+-   $T_{x}$: número total de años-personas que les resta por vivir a los sobrevivientes de edad exacta x. $$T_{x} = \sum_{i=x}^{\omega} {}_{n}L_{i}$$
+
+-   $e_x^0$: esperanza de vida a la edad exacta x. $$e_x^0 = \frac{T_{x}}{l_{x}}$$
+
+### iii) Fórmulas para la tabla de vida con causa eliminada (Decrementos Múltiples)
+
+Para aislar el impacto epidemiológico y actuarial de una causa exógena específica (en este caso, los homicidios en 2019), se recurre a la teoría de decrementos múltiples para construir una tabla de vida de causa eliminada. Las expresiones matemáticas utilizadas para este procedimiento, basadas en la metodología de Chiang, son:
+
+-   ${}_{n}D_{x}^{i}$: número de defunciones observadas debido a la causa específica $i$ (homicidios) entre las edades $x$ y $x+n$.
+
+-   ${}_{n}q_{x}^{-i}$: probabilidad de fallecer entre las edades $x$ y $x+n$ si se elimina la causa de muerte $i$ de la población. Se calcula asumiendo proporcionalidad en las fuerzas de mortalidad: $${}_{n}q_{x}^{-i} = 1 - \left({}_{n}p_{x}\right)^{\frac{{}_{n}D_{x} - {}_{n}D_{x}^{i}}{{}_{n}D_{x}}}$$
+
+-   ${}_{n}p_{x}^{-i}$: probabilidad de sobrevivir entre las edades $x$ y $x+n$ ante la ausencia de la causa de muerte $i$: $${}_{n}p_{x}^{-i} = 1 - {}_{n}q_{x}^{-i} = \left({}_{n}p_{x}\right)^{\frac{{}_{n}D_{x} - {}_{n}D_{x}^{i}}{{}_{n}D_{x}}}$$
+
+-   $l_{x}^{-i}$: número de sobrevivientes teóricos a la edad exacta $x$ en la tabla de vida con causa eliminada. Partimos del mismo radix inicial ($l_0^{-i} = 100,000$): $$l_{x+n}^{-i} = l_x^{-i} \cdot {}_{n}p_{x}^{-i}$$
+
+-   ${}_{n}d_{x}^{-i}$: número de defunciones teóricas en la cohorte entre las edades $x$ y $x+n$ debido al resto de las causas en ausencia de la causa $i$: $${}_{n}d_{x}^{-i} = l_x^{-i} - l_{x+n}^{-i}$$
+
+-   ${}_{n}L_{x}^{-i}$: número de años-persona vividos entre las edades $x$ y $x+n$ por la cohorte teórica libre de la causa $i$: $${}_{n}L_{x}^{-i} = n \cdot l_{x+n}^{-i} + {}_{n}a_{x} \cdot {}_{n}d_{x}^{-i}$$
+
+-   $T_{x}^{-i}$: número total de años-persona que les resta por vivir a los sobrevivientes de la cohorte teórica a partir de la edad exacta $x$: $$T_{x}^{-i} = \sum_{j=x}^{\omega} {}_{n}L_{j}^{-i}$$
+
+-   $e_x^{-i}$: esperanza de vida restante a la edad exacta $x$ tras haber excluido el riesgo de morir por la causa específica $i$: $$e_x^{-i} = \frac{T_{x}^{-i}}{l_{x}^{-i}}$$
+
+## IV) Código usado para los cálculos
+
+### i) Obtención de los datos
+
+Para la construcción de nuestras tablas de vida, comenzamos buscando los datos del Censo de Población y Vivienda (CPV) de la pagina oficial de [INEGI](https://www.inegi.org.mx/programas/ccpv/2020/) correspondientes a los años 2010 y 2020, asimismo buscamos las [Estadísticas de Defunciones Registradas (EDR)](https://www.inegi.org.mx/programas/edf/)
+
+### ii) Preprocesamiento
+
+Para esto con los datos obtenidos, comenzamos a procesar las bases de datos de (CPV) de 2010 y 2020, donde aislamos en intervalos a los menores de un año (0 años), se agrupó a la población de 1 a 4 años (1), y a partir de los 5 años se crearon grupos de 5 en 5 (5, 10, 15... hasta el grupo abierto de 85 y más).
+
+### iii) Prorrateo
+
+Despues de aislar por intervalos la base de datos de Censo de Población y Vivienda (CPV), procedemos a hacer el prorrateo de estos datos, para los registros de CPV con edades no especificadas lo que hicimos fue hacer la redistribucion proporcional en cada año y sexo, el procedimiento y los datos pueden ser encontrados en la hoja [Prorrateo](https://docs.google.com/spreadsheets/d/1CVaURuhmih_XkD0z3105rVYbwST6nhUX/edit?usp=sharing&ouid=106085576695060247150&rtpof=true&sd=true), por otro lado para obtener los valores de las defunciones por año, despues de obtener la base datos del INEGI, lo que realizamos fue calcular los APV(Años Persona Vividos) a partir de los prorrateos de CPV, este procedimiento se puede ver mas a detalle en la hoja de [APV y Mortalidad de Veracruz](https://drive.google.com/uc?export=download&id=1zDqt3XzlVKVfA0gVaql2p3hxvCxJVR_R)
+
+### iv) Construcción de la Tabla de vida
+
+Para terminar la construccion de las tablas de vida por año y sexo, usamos la funcion lt_abr, la cual recibe la edad ($x$), las tasas centrales de mortalidad ($m_x$) y el sexo, que a su vez utiliza todas las fórmulas ya mencionadas anteriromente en el inciso c, así usando la libreria data.table se devuelven todas las funciones necesarias para completar las tablas de vida
+
+```{r}
+#\| echo: true 
+rm(list = ls())
+library(data.table)
+library(knitr)
+library(kableExtra)
+
+#Definimos las función de la tabla de vida
+lt_abr <- function(x, mx, sex="f", IMR=NA) {
+  m <- length(x)
+  n <- c(diff(x), NA)
+  ax <- n/2
+  if (sex == "m") {
+    if (mx[1] >= 0.107) {
+      ax[1] <- 0.330
+    } else {
+      ax[1] <- 0.045 + 2.684 * mx[1]
+    }
+  } else if (sex == "f") {
+    if (mx[1] >= 0.107) {
+      ax[1] <- 0.350
+    } else {
+      ax[1] <- 0.053 + 2.800 * mx[1]
+    }
+  }
+  qx <- (n * mx) / (1 + (n - ax) * mx)
+  qx[m] <- 1
+  px <- 1 - qx
+  lx <- 100000 * cumprod(c(1, px[-m]))
+  dx <- c(-diff(lx), lx[m])
+  Lx <- n * c(lx[-1], 0) + ax * dx
+  Lx[m] <- lx[m] / mx[m]
+  Tx <- rev(cumsum(rev(Lx)))
+  ex <- Tx / lx
+  return(data.table(x, n, mx, ax, qx, px, lx, dx, Lx, Tx, ex))
+}
+
+#Leemos los datos
+apv <- fread("Data/APV_2010-2019-2021.csv")
+Dx <- fread("Data/Deaths_Ver_2010-2019-2021.csv")
+
+#Calculamos las 6 tablas de vida
+lt_2010_h <- lt_abr(apv[year==2010, x], Dx[year==2010, Dx_h]/apv[year==2010, N_h], sex = "m")
+lt_2010_m <- lt_abr(apv[year==2010, x], Dx[year==2010, Dx_m]/apv[year==2010, N_m], sex = "f")
+lt_2019_h <- lt_abr(apv[year==2019, x], Dx[year==2019, Dx_h]/apv[year==2019, N_h], sex = "m")
+lt_2019_m <- lt_abr(apv[year==2019, x], Dx[year==2019, Dx_m]/apv[year==2019, N_m], sex = "f")
+lt_2021_h <- lt_abr(apv[year==2021, x], Dx[year==2021, Dx_h]/apv[year==2021, N_h], sex = "m")
+lt_2021_m <- lt_abr(apv[year==2021, x], Dx[year==2021, Dx_m]/apv[year==2021, N_m], sex = "f")
+
+# L edamos estilo a la tabla 
+imprimir_tabla_vida <- function(tabla, titulo) {
+  kable(tabla, 
+        digits = c(0, 0, 5, 3, 5, 5, 0, 0, 0, 0, 2), 
+        col.names = c("x", "n", "mx", "ax", "qx", "px", "lx", "dx", "Lx", "Tx", "ex"),
+        caption = titulo,
+        align = "c",
+        format = "latex", 
+        booktabs = TRUE) |>
+    kable_styling(latex_options = c("scale_down", "HOLD_position"),
+                  position = "center") |>
+    row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
+}
+
+#Imprimimos las tablas 
+imprimir_tabla_vida(lt_2010_h, "Tabla de Mortalidad - Hombres Veracruz 2010")
+imprimir_tabla_vida(lt_2010_m, "Tabla de Mortalidad - Mujeres Veracruz 2010")
+imprimir_tabla_vida(lt_2019_h, "Tabla de Mortalidad - Hombres Veracruz 2019")
+imprimir_tabla_vida(lt_2019_m, "Tabla de Mortalidad - Mujeres Veracruz 2019")
+imprimir_tabla_vida(lt_2021_h, "Tabla de Mortalidad - Hombres Veracruz 2021")
+imprimir_tabla_vida(lt_2021_m, "Tabla de Mortalidad - Mujeres Veracruz 2021")
+
+```
+
+### v) Cuadro de esperanzas de vida
+
+```{r}
+#\| echo: true 
+#Cargamos las librerias que necesitaremos 
+library(data.table)
+library(knitr)
+library(kableExtra)
+
+#Leemos los datos de muertes y apv por año y prorrateados 
+apv <- fread("Data/APV_2010-2019-2021.csv")
+Dx <- fread("Data/Deaths_Ver_2010-2019-2021.csv")
+
+#Creamos las tablas de vida 
+lt_2010_h <- lt_abr(apv[year==2010, x], 
+                    Dx[year==2010, Dx_h]/apv[year==2010, N_h], 
+                    sex = "m")
+
+lt_2010_m <- lt_abr(apv[year==2010, x], 
+                    Dx[year==2010, Dx_m]/apv[year==2010, N_m], 
+                    sex = "f")
+
+lt_2019_h <- lt_abr(apv[year==2019, x], 
+                    Dx[year==2019, Dx_h]/apv[year==2019, N_h], 
+                    sex = "m")
+
+lt_2019_m <- lt_abr(apv[year==2019, x], 
+                    Dx[year==2019, Dx_m]/apv[year==2019, N_m], 
+                    sex = "f")
+lt_2021_h <- lt_abr(apv[year==2021, x], 
+                    Dx[year==2021, Dx_h]/apv[year==2021, N_h], 
+                    sex = "m")
+
+lt_2021_m <- lt_abr(apv[year==2021, x], 
+                    Dx[year==2021, Dx_m]/apv[year==2021, N_m], 
+                    sex = "f")
+#Tomamos la esperanza de vida al nacer (x=0) de las tablas de vida
+e0_2010_h <- lt_2010_h$ex[1]
+e0_2010_m <- lt_2010_m$ex[1]
+e0_2019_h <- lt_2019_h$ex[1]
+e0_2019_m <- lt_2019_m$ex[1]
+e0_2021_h <- lt_2021_h$ex[1]
+e0_2021_m <- lt_2021_m$ex[1]
+
+cuadro_e0 <- data.frame(
+  Anio = c(2010, 2019, 2021),
+  Hombres = c(e0_2010_h, e0_2019_h, e0_2021_h),
+  Mujeres = c(e0_2010_m, e0_2019_m, e0_2021_m)
+)
+
+colnames(cuadro_e0) <- c("Año", "Hombres", "Mujeres")
+
+# Extraemos la esperanza de vida al nacer (x=0) de las tablas previamente calculadas
+e0_2010_h <- lt_2010_h$ex[1]
+e0_2010_m <- lt_2010_m$ex[1]
+e0_2019_h <- lt_2019_h$ex[1]
+e0_2019_m <- lt_2019_m$ex[1]
+e0_2021_h <- lt_2021_h$ex[1]
+e0_2021_m <- lt_2021_m$ex[1]
+
+cuadro_e0 <- data.frame(
+  Anio = c(2010, 2019, 2021),
+  Hombres = c(e0_2010_h, e0_2019_h, e0_2021_h),
+  Mujeres = c(e0_2010_m, e0_2019_m, e0_2021_m)
+)
+
+colnames(cuadro_e0) <- c("Año", "Hombres", "Mujeres")
+
+kable(cuadro_e0, 
+      caption = "Esperanza de Vida al Nacer (e0) en Veracruz por Sexo y Año", 
+      align = 'c', format = "latex", booktabs = TRUE) |>
+  kable_styling(latex_options = c("HOLD_position"), position = "center") |>
+  row_spec(0, bold = TRUE, color = "white", background = "#2C3E50") |> 
+  column_spec(1, bold = TRUE)
+```
+
+### vi) Gráficas del informe
+
+Para analizar visualmente el comportamiento de la mortalidad y el impacto de la pandemia de COVID-19 en Veracruz, graficaremos las funciones más importantes de nuestra tabla de vida.
+
+Tomando en cuenta que a las tasas centrales de mortalidad (${}_{n}m_{x}$) y las probabilidades de muerte (${}_{n}q_{x}$) se les aplica el logaritmo natural (`log`) para graficar.
+
+```{r, fig.width=10, fig.height=5}
+par(mfrow = c(1, 2))
+#Gráficas de Años Persona Vividos
+
+#Para hombres
+plot(apv[year==2010, x], apv[year==2010, N_h], type = "l", col = "#2ecc71", lwd = 2,
+     xlab = "Edad exacta (x)", ylab = "Población (APV)",
+     main = "Años-Persona Vividos - Hombres")
+lines(apv[year==2019, x], apv[year==2019, N_h], col = "#3498db", lwd = 2)
+lines(apv[year==2021, x], apv[year==2021, N_h], col = "#e74c3c", lwd = 2)
+legend("topright", legend = c("2010", "2019", "2021"),
+       col = c("#2ecc71", "#3498db", "#e74c3c"), lty = 1, lwd = 2, cex = 0.8)
+
+#Para mujeres
+plot(apv[year==2010, x], apv[year==2010, N_m], type = "l", col = "#2ecc71", lwd = 2,
+     xlab = "Edad exacta (x)", ylab = "Población (APV)",
+     main = "Años-Persona Vividos - Mujeres")
+lines(apv[year==2019, x], apv[year==2019, N_m], col = "#3498db", lwd = 2)
+lines(apv[year==2021, x], apv[year==2021, N_m], col = "#e74c3c", lwd = 2)
+legend("topright", legend = c("2010", "2019", "2021"),
+       col = c("#2ecc71", "#3498db", "#e74c3c"), lty = 1, lwd = 2, cex = 0.8)
+par(mfrow = c(1, 1))
+```
+
+```{r, fig.width=10, fig.height=5}
+par(mfrow = c(1, 2))
+
+#Graficamos las defunciones (Dx)
+
+#le ponemos un tope a la grafica
+techo_h <- max(c(Dx[year==2010, Dx_h], Dx[year==2019, Dx_h], Dx[year==2021, Dx_h]), na.rm = TRUE) * 1.15
+techo_m <- max(c(Dx[year==2010, Dx_m], Dx[year==2019, Dx_m], Dx[year==2021, Dx_m]), na.rm = TRUE) * 1.15
+
+#Para hombres
+plot(Dx[year==2010, x], Dx[year==2010, Dx_h], type = "l", col = "#2ecc71", lwd = 2,
+     xlab = "Edad exacta (x)", ylab = "Defunciones",
+     main = "Defunciones - Hombres",
+     ylim = c(0, techo_h))
+lines(Dx[year==2019, x], Dx[year==2019, Dx_h], col = "#3498db", lwd = 2)
+lines(Dx[year==2021, x], Dx[year==2021, Dx_h], col = "#e74c3c", lwd = 2)
+legend("topleft", legend = c("2010", "2019", "2021"),
+       col = c("#2ecc71", "#3498db", "#e74c3c"), lty = 1, lwd = 2, cex = 0.8)
+
+# Para mujeres
+plot(Dx[year==2010, x], Dx[year==2010, Dx_m], type = "l", col = "#2ecc71", lwd = 2,
+     xlab = "Edad exacta (x)", ylab = "Defunciones",
+     main = "Defunciones - Mujeres",
+     ylim = c(0, techo_m))
+lines(Dx[year==2019, x], Dx[year==2019, Dx_m], col = "#3498db", lwd = 2)
+lines(Dx[year==2021, x], Dx[year==2021, Dx_m], col = "#e74c3c", lwd = 2)
+legend("topleft", legend = c("2010", "2019", "2021"),
+       col = c("#2ecc71", "#3498db", "#e74c3c"), lty = 1, lwd = 2, cex = 0.8)
+
+par(mfrow = c(1, 1))
+```
+
+```{r, fig.width=10, fig.height=5}
+par(mfrow = c(1, 2))
+
+# Gráficas de mx en escala logaritmica
+#Para hombres
+plot(lt_2010_h$x, log(lt_2010_h$mx), type = "l", col = "#2ecc71", lwd = 2,
+     xlab = "Edad exacta (x)", ylab = "log(mx)",
+     main = "nmx en escala log - Hombres")
+lines(lt_2019_h$x, log(lt_2019_h$mx), col = "#3498db", lwd = 2)
+lines(lt_2021_h$x, log(lt_2021_h$mx), col = "#e74c3c", lwd = 2)
+legend("bottomright", legend = c("2010", "2019", "2021"),
+       col = c("#2ecc71", "#3498db", "#e74c3c"), lty = 1, lwd = 2, cex = 0.8)
+
+#Para mujeres
+plot(lt_2010_m$x, log(lt_2010_m$mx), type = "l", col = "#2ecc71", lwd = 2,
+     xlab = "Edad exacta (x)", ylab = "log(mx)",
+     main = "nmx en escala log - Mujeres")
+lines(lt_2019_m$x, log(lt_2019_m$mx), col = "#3498db", lwd = 2)
+lines(lt_2021_m$x, log(lt_2021_m$mx), col = "#e74c3c", lwd = 2)
+legend("bottomright", legend = c("2010", "2019", "2021"),
+       col = c("#2ecc71", "#3498db", "#e74c3c"), lty = 1, lwd = 2, cex = 0.8)
+```
+
+```{r, fig.width=10, fig.height=5}
+par(mfrow = c(1, 2))
+
+#Gráficas de qx(probabilidad de muerte) en escala logaritmica
+
+#Para hombres
+plot(lt_2010_h$x, log(lt_2010_h$qx), type = "l", col = "#2ecc71", lwd = 2,
+     xlab = "Edad exacta (x)", ylab = "log(qx)",
+     main = "nqx escala log - Hombres")
+lines(lt_2019_h$x, log(lt_2019_h$qx), col = "#3498db", lwd = 2)
+lines(lt_2021_h$x, log(lt_2021_h$qx), col = "#e74c3c", lwd = 2)
+legend("bottomright", legend = c("2010", "2019", "2021"),
+       col = c("#2ecc71", "#3498db", "#e74c3c"), lty = 1, lwd = 2, cex = 0.8)
+
+# Para Mujeres
+plot(lt_2010_m$x, log(lt_2010_m$qx), type = "l", col = "#2ecc71", lwd = 2,
+     xlab = "Edad exacta (x)", ylab = "log(qx)",
+     main = "nqx en escala log - Mujeres")
+lines(lt_2019_m$x, log(lt_2019_m$qx), col = "#3498db", lwd = 2)
+lines(lt_2021_m$x, log(lt_2021_m$qx), col = "#e74c3c", lwd = 2)
+legend("bottomright", legend = c("2010", "2019", "2021"),
+       col = c("#2ecc71", "#3498db", "#e74c3c"), lty = 1, lwd = 2, cex = 0.8)
+```
+
+```{r, fig.width=10, fig.height=5}
+
+par(mfrow = c(1, 2))
+
+#Graficamos los Sobrevivientes (lx)
+
+#Para hombres
+plot(lt_2010_h$x, lt_2010_h$lx, type = "l", col = "#2ecc71", lwd = 2,
+     xlab = "Edad exacta (x)", ylab = "lx",
+     main = "Sobrevivientes (lx) - Hombres")
+lines(lt_2019_h$x, lt_2019_h$lx, col = "#3498db", lwd = 2)
+lines(lt_2021_h$x, lt_2021_h$lx, col = "#e74c3c", lwd = 2)
+legend("bottomleft", legend = c("2010", "2019", "2021"),
+       col = c("#2ecc71", "#3498db", "#e74c3c"), lty = 1, lwd = 2, cex = 0.8)
+
+#Para mujeres
+plot(lt_2010_m$x, lt_2010_m$lx, type = "l", col = "#2ecc71", lwd = 2,
+     xlab = "Edad exacta (x)", ylab = "lx",
+     main = "Sobrevivientes (lx) - Mujeres")
+lines(lt_2019_m$x, lt_2019_m$lx, col = "#3498db", lwd = 2)
+lines(lt_2021_m$x, lt_2021_m$lx, col = "#e74c3c", lwd = 2)
+legend("bottomleft", legend = c("2010", "2019", "2021"),
+       col = c("#2ecc71", "#3498db", "#e74c3c"), lty = 1, lwd = 2, cex = 0.8)
+
+par(mfrow = c(1, 1))
+```
+
+### vii) Análisis de resultados y particularidades
+
+**Tendencia histórica (2010 - 2019)** Entre 2010 y 2019, la esperanza de vida al nacer ($e_0$) en Veracruz muestra una dinámica coherente con el patrón demográfico nacional, caracterizada por avances paulatinos pero enfrentando el reto del envejecimiento poblacional. Las mujeres presentan de forma sistemática una esperanza de vida superior a la de los hombres. Esta brecha de género refleja:
+
+• Menor exposición a mortalidad por causas externas (accidentes, homicidios y violencia, fuertemente concentrados en la población masculina).
+
+• Menor prevalencia de comportamientos de riesgo y diferencias biológicas frente a padecimientos crónicos tempranos.
+
+**Particularidades del estado de Veracruz**
+
+Al analizar las curvas de defunciones ($D_x$) y sobrevivientes ($l_x$), se observan características muy específicas de la entidad:
+
+**Volumen y movilidad:** Al ser un estado con más de 8 millones de habitantes y marcados contrastes socioeconómicos, existe una constante migración interna de la zona norte (con mayor pobreza marginal) hacia los polos de desarrollo en el centro y sur, lo que concentra los riesgos de mortalidad y satura los servicios de salud en zonas urbanas específicas.
+
+**Bono demográfico vs. Perfil epidemiológico:** Aunque la edad mediana es relativamente joven (31 años), Veracruz presenta una vulnerabilidad crítica ante enfermedades crónico-degenerativas. El estado lidera la tasa bruta de mortalidad por diabetes (130.8 fallecimientos por cada 100,000 habitantes, superando ampliamente la media nacional de 86.6), a lo que se suman enfermedades del corazón, tumores malignos y padecimientos del hígado. Esta severa carga de morbilidad genera un alto volumen de defunciones prematuras.
+
+**Impacto de la COVID-19 en 2021**
+
+Al observar las gráficas y los cuadros de 2021, se evidencia una ruptura drástica y sin precedentes en la tendencia histórica, la alta prevalencia de comorbilidades (especialmente la diabetes y enfermedades cardíacas crónicas) actuó como un potente catalizador para la letalidad de la COVID-19 en la población veracruzana. En las gráficas en escala logarítmica, esto se refleja visualmente en:
+
+• Un levantamiento atípico de las curvas de tasas centrales de mortalidad ($m_x$) y probabilidades de muerte ($q_x$) en los grupos de edades adultas (a partir de los 40 y 50 años).
+
+• Una caída pronunciada de la curva de sobrevivientes ($l_x$) a edades más tempranas en comparación con 2019.
+
+• Una fuerte reducción de la esperanza de vida al nacer ($e_0$) respecto a la observada en 2019. Este retroceso fue notoriamente más profundo en los hombres, ensanchando la brecha de género en la mortalidad durante este año.
+
+En términos demográficos, la pandemia representó un choque exógeno severo que, combinado con la epidemia previa de enfermedades metabólicas en el estado, generó un exceso de mortalidad crítico, alterando temporalmente la estructura de defunciones.
+
+**Conclusiones**
+
+• La metodología demográfica aplicada (cálculo de Años Persona Vividos, conversión a probabilidades $q_x$ y construcción de tablas de vida) demostró ser robusta para obtener indicadores coherentes que visibilizan el comportamiento de la mortalidad por sexo y año en la entidad.
+
+• Las particularidades de Veracruz —su gran tamaño poblacional, la migración interna por desigualdad y, de manera crítica, su alarmante tasa de mortalidad por diabetes— son factores determinantes en sus niveles de supervivencia.
+
+• La pandemia de COVID-19 en 2021 tuvo un impacto devastador, elevando sustancialmente la mortalidad en edades productivas y avanzadas, y contrayendo la esperanza de vida, dejando en evidencia la vulnerabilidad sanitaria de la población veracruzana frente a crisis epidemiológicas.
+
+De acuerdo con los requerimientos metodológicos, la tabla de vida completa de causa eliminada para el año 2019 (por sexo) se encuentra estructurada con sus fórmulas actuariales dinámicas dentro del archivo de Excel en la ruta del repositorio: `output/Homicidios, ver.xlsx`.
+
+A continuación, se presentan los análisis gráficos correspondientes al impacto directo de la eliminación de las muertes por homicidio sobre las probabilidades de muerte ($q_x$) y la esperanza de vida restante ($e_x$) en el estado de Veracruz.
+
+## b)Tabla de vida de Causa Eliminada
+
+::: {#fig-analisis-homicidios layout="[[1,1], [1]]"}
+![Probabilidades de Muerte $q_x$ - Hombres](C:/Users/hecto/OneDrive/Documents/Demografia/images/grafica_qx_homicidios_hombres.png){#fig-qx-h}
+
+![Probabilidades de Muerte $q_x$ - Mujeres](C:/Users/hecto/OneDrive/Documents/Demografia/images/grafica_qx_homicidios_Mujeres.png){#fig-qx-m}
+
+![Comparación de la Esperanza de Vida Restante $e_x$](C:/Users/hecto/OneDrive/Documents/Demografia/images/grafica_ex_homicidios.png){#fig-ex-comp width="65%"}
+
+Impacto demográfico y curvas biométricas tras la exclusión de homicidios en Veracruz, 2019.
+:::
+
+------------------------------------------------------------------------
+
+### Análisis Demográfico y Actuarial de la Causa Eliminada
+
+El análisis de decrementos múltiples para el año 2019 revela el profundo y diferenciado impacto que la violencia (homicidios) ejerce sobre la estructura de la mortalidad según el sexo en la entidad federativa:
+
+#### 1. Ganancia en la Esperanza de Vida al Nacer ($e_0$)
+
+Al revisar los datos de la memoria de cálculo interactiva reflejados en la @fig-ex-comp, la exclusión de los homicidios genera un incremento masivo en la esperanza de vida al nacer de los **hombres**, la cual muestra una ganancia exacta de **1.68 años** (pasando de un nivel observado de **72.63 años** a un nivel teórico de **74.31 años**).
+
+Por el contrario, la población de **mujeres** exhibe una ganancia marginal. Esto evidencia de forma contundente que el fenómeno de la violencia homicida en Veracruz actúa como un choque exógeno que penaliza de manera casi exclusiva a la población masculina.
+
+#### 2. Mitigación del "Efecto Joroba" en Adultos Jóvenes
+
+-   **Población Masculina (@fig-qx-h):** La curva original de los hombres presenta una sobromortalidad joven sumamente marcada (conocida en demografía como *bump* o joroba de mortalidad) entre los 15 y los 40 años de edad. Al eliminar la causa de homicidios, la curva (*línea corregida*) se deprime drásticamente. Por ejemplo, en el grupo de edad de 20 a 24 años, la probabilidad original disminuye sustancialmente, demostrando que el exceso de riesgo en estas edades no obedece a factores biológicos o de desgaste natural, sino a factores del entorno social.
+-   **Población Femenina (@fig-qx-m):** La comparación de las curvas para las mujeres muestra que la línea original y la corregida son prácticamente idénticas a lo largo de todo el ciclo vital. No existe una "joroba" visible en las edades jóvenes, lo que confirma que la estructura de la mortalidad femenina se mantiene gobernada por causas biológicas, crónico-degenerativas y de envejecimiento natural.
+
+#### 3. Comportamiento por Edades Avanzadas
+
+Como se aprecia en la curva de esperanza de vida restante (@fig-ex-comp), la brecha (o ganancia en años de vida) es sumamente ancha en las edades tempranas y se va estrechando paulatinamente conforme se avanza hacia las edades senectas. Esto confirma un comportamiento típicamente actuarial: el homicidio trunca vidas en etapas tempranas (reproductivas y económicamente activas) afectando los años-persona acumulados a edades jóvenes, pero deja de tener un peso estadístico significativo en el desgaste biológico natural de la vejez, donde ambas curvas terminan por converger.
+
+## c) Demostración de la Tasa de reemplazo
+
+Para comprender que es la Tasa de Reemplazo Poblacional, primero hay que comenzar analizando las tasas de fecundidad, y es que mientras los países siguen desarrollandose, las tasas de fecundidad tienden a las tasas de reemplazo.
+
+Empecemos con la Tasa Neta de Reproducción (TNR/NRR)
+
+La TNR está definida como el número promedio de hijas que tendrá una cohorte de mujeres a lo largo de su vida, sin embargo, a diferencia de la Tasa de Fecundidad Total, la TNR toma en cuenta los factores de fallecimientos de mujeres; ajusta las cuentas considerando a las mujeres que han fallecido antes de llegar a una edad suficiente para tener hijos.
+
+Por otra parte, para la TNR existe un umbral que indica la variación de la población dependiendo de su resultado.
+
+→ Una TNR de exactamente 1 sugiere que cada madre está siendo reemplazada por una única hija, y por lo tanto que la población se mantiene igual.
+
+→ Si la TNR > 1, la población está creciendo, esto se interpreta como que existe más de una hija que ocupará el lugar de la madre en la siguiente generación.
+
+→ De tener una TNR < 1, se sigue que no hay "suficientes hijas" para reemplazar a cada madre en la siguiente cohorte, por lo que reflejaría una disminución en la población.
+
+La fórmula para calcular la TNR está dada por:
+
+$$NRR = \sum_{x=\alpha}^{\beta} {}_{n}f_{x}^{F} \cdot \frac{{}_{n}L_{x}^{F}}{l_{0}^{F}}$$
+
+En donde:
+
+$\alpha$ = El inicio de la edad reproductiva de una mujer, normalmente se toma $\alpha$ = 15
+
+$\beta$ = El final de la edad reproductiva de una mujer, normalmente se toma $\beta$ = 49
+
+${}_{n}f_{x}^{F}$ = La tasa de fecundidad específica por edades de mujeres (superíndice $F$: Female) desde la edad $x$ hasta la edad $x+n$
+
+${}_{n}L_{x}^{F}$ = Años persona vividos por mujeres desde la edad $x$ hasta la edad $x+n$
+
+$l_{0}^{F}$ = Cantidad inicial de mujeres nacidas
+
+A partir de ello, se puede utilizar una aproximación de la TNR, en donde:
+
+$$TNR \approx p(A) GRR$$
+
+En donde:
+
+→ $p(A)$ = Probabilidad de que una mujer sobreviva desde el nacimiento hasta la edad media de fecundidad (también se puede encontrar como $\ell(\bar{m})$)
+
+→ GRR = Tasa bruta de reproducción: Medida que indica el número promedio de hijas que tendría una mujer a lo largo de su vida fértil, sin suponer mortalidad antes del periodo reproductivo.
+
+Ahora, la GRR está dada por:
+
+$$GRR = n \sum_{x=\alpha}^{\beta} {}_{n}f_{x}^{F}$$
+
+Con $n$ = La amplitud del intervalo de los grupos de edad, se suelen usar periodos quinquenales ($n = 5$).
+
+Ahora, conectamos la reproducción (solo niñas) con la Tasa Global de Fecundidad (TGF), que toma en cuenta todos los nacimientos (niños y niñas). Para ello, tomamos la siguiente relación:
+
+$$TGF = GRR(1 + SRB)$$
+
+En donde SRB es la proporción de sexos al nacer, dada por el número de varones al nacer por cada 100 niñas.
+
+Si despejamos la GRR de nuestra aproximación anterior ($GRR = \frac{NRR}{p(A)}$) y la sustituimos en la ecuación de la TGF, obtenemos la fórmula general:
+
+$$TGF = \frac{NRR}{p(A)} (1 + SRB)$$
+
+Finalmente, evaluamos la ecuación considerando que la población debe mantenerse igual (NRR = 1) e introduciendo las constantes demográficas:
+
+$$SRB \approx 1.0366$$
+
+(nacen aproximadamente 104 niños por cada 100 niñas).
+
+$$ p(A) \approx 0.98$$ (el 98% de las mujeres sobreviven hasta la edad media de la maternidad).
+
+Al sustituir estos valores:
+
+$$TGF = \frac{1}{0.98} \cdot (1 + 1.0366) = \frac{2.0366}{0.98} = 2.078 \approx 2.1$$
+
+Así, se demuestra que se requieren aproximadamente 2.1 hijos por mujer para garantizar que al menos una hija sobreviva para reemplazar a la madre en la siguiente generación.
+
+Fuentes:
+
+Consejo Nacional de Población [CONAPO]. (2023). Proyecciones de la Población de México y de las Entidades Federativas, 2020-2070. Gobierno de México.
+
+Instituto Nacional de Estadística y Geografía [INEGI]. (2025). Estadística de Nacimientos Registrados (ENR). Aguascalientes, México.
+
+https://askfilo.com/user-question-answers-smart-solutions/what-is-the-formula-of-nrr-3230373733333939
+
+https://energyeducation.ca/encyclopedia/Population_replacement_rate
+
+https://www.youtube.com/watch?v=JdHCQZsVfmc&t=3s
+
+
+## d)Análisis Demográfico de la Causa y Reemplazo
+El análisis de las medidas de fecundidad revela el profundo y diferenciado impacto que tienen las tendencias reproductivas actuales sobre la estructura demográfica de la entidad federativa respecto a la nación:
+
+# 1. Contracción en la Natalidad y Fecundidad General
+
+Al revisar los indicadores generales, es evidente que Veracruz presenta una menor intensidad reproductiva que el resto del país.
+La Tasa Bruta de Natalidad (b) en el estado se sitúa en 14.27 nacimientos por cada 1,000 habitantes, una cifra notablemente inferior a los 17.28 nacimientos por cada 1,000 habitantes registrados a nivel nacional. Esta tendencia se corrobora con la Tasa de Fecundidad General (TFG): Veracruz presenta 51.49 nacimientos por cada 1,000 Mujeres en Edad Fértil (MEF), frente a los 57.90 del contexto nacional. Esto representa una diferencia relativa del -11.06% para el estado.  
+
+# 2. Mitigación de la Cúspide Reproductiva ($f(x,5)$)
+
+La estructura de la fecundidad por grupos de edad mantiene un comportamiento típicamente demográfico en forma de "campana" para ambas poblaciones, pero con intensidades distintas:Cúspide de Fecundidad: La mayor probabilidad de dar a luz se concentra fuertemente en el grupo de 20 a 24 años. En México, la tasa es de 0.1041 nacimientos por mujer , mientras que la curva en Veracruz se deprime ligeramente a 0.0973. Le sigue el grupo de 25 a 29 años, donde las tasas inician su descenso.
+
+Fecundidad Adolescente: En el grupo temprano (15 a 19 años), México exhibe una tasa de 0.0588. Para Veracruz, la cifra es de 0.0559, evidenciando que, si bien es menor, existe un aporte estadísticamente significativo de las madres jóvenes al volumen total de nacimientos.
+
+# 3. Tasa Global de Fecundidad (TGF) y el Umbral de Reemplazo
+
+Uno de los hallazgos más contundentes es la caída de la fecundidad por debajo del umbral de reemplazo poblacional (fijado teóricamente en 2.1 hijos por mujer).A nivel nacional, la TGF calculada es de 1.92 hijos por mujer.  En el caso de Veracruz, la TGF cae de manera más acentuada hasta 1.75 hijos por mujer.
+Esto evidencia de forma contundente que el estado no está logrando el reemplazo generacional. A largo plazo, esto actuará como un catalizador para el envejecimiento de la población veracruzana y promoverá la tasa negativa de crecimiento mencionada en contextos anteriores.
+
+# 4. Tasas de Reproducción Femenina (TBR y TNR)
+
+Para comprender cabalmente la Tasa de Reemplazo Poblacional, es indispensable analizar a la cohorte de hijas que sobrevivirán para sustituir a sus madres .
+Tasa Bruta de Reproducción (TBR): Sin tomar en cuenta el factor de fallecimientos, una mujer mexicana tendría en promedio 0.946 hijas , mientras que en Veracruz este número desciende a 0.862 hijas. 
+Tasa Neta de Reproducción (TNR): Al ajustar las cuentas considerando a las mujeres que fallecen antes de concluir su periodo reproductivo (empleando los Años-Persona Vividos, $L_x$), la TNR de México es de 0.925. Sin embargo, la TNR de Veracruz cae abruptamente a 0.168 , marcando una diferencia relativa del -81.76% respecto al país. Un resultado tan alejado de 1 (donde cada madre es reemplazada por una única hija) sugiere no solo un bajo nacimiento de niñas, sino un fuerte castigo actuarial por la mortalidad femenina en edades tempranas y reproductivas dentro del estado.  
+
+# Conclusión
+
+Los resultados de este modelo confirman la severa vulnerabilidad demográfica de Veracruz. La entidad exhibe un truncamiento prematuro de su fecundidad que le impide alcanzar los niveles de reemplazo biológico de la nación. Esto deja en evidencia que el estado requerirá de un análisis profundo sobre el futuro de su estructura de edades, ya que una base poblacional cada vez más estrecha (menos nacimientos) deberá sostener a los grupos de edad avanzada en las próximas décadas.
+
+## e) Tasas específicas de fecundidad
+
+Análisis de las Curvas de Fecundidad (TEFE):
+Al graficar las Tasas Específicas de Fecundidad ($f(x,5)$) para México y el estado de Veracruz, se aprecian patrones demográficos consistentes en cuanto a la distribución por edades, pero con brechas significativas en la intensidad reproductiva general.
+
+### Estructura Cúspide y Forma de la Curva: 
+
+Ambas regiones presentan una curva asimétrica orientada hacia la izquierda (fecundidad temprana), alcanzando su pico máximo en el grupo quinquenal de 20 a 24 años. En México, la tasa máxima es de 0.1041 nacimientos por mujer en este grupo, mientras que en Veracruz el pico se mitiga a 0.0973 nacimientos.  
+
+### Achatamiento de la Curva Estatal: 
+
+A lo largo de todo el periodo reproductivo (de los 15 a los 49 años), la curva de Veracruz transcurre de forma paralela pero consistentemente por debajo de la curva nacional. Esta brecha es particularmente visible en la etapa de máxima madurez reproductiva (25 a 34 años). Por ejemplo, en el grupo de 25 a 29 años, la tasa de México es de 0.1010, contrastando fuertemente con el 0.0931 del estado de Veracruz.  
+
+### Fecundidad Adolescente y Fecundidad Tardía: 
+
+En los extremos reproductivos, las diferencias absolutas parecen menores, pero sus implicaciones son profundas. La fecundidad adolescente (15 a 19 años) representa un volumen importante de los nacimientos en ambos casos, siendo marginalmente menor en Veracruz (0.0559) frente a la media del país (0.0588). A partir de los 35 años, ambas curvas decaen aceleradamente, convergiendo casi a cero en el grupo de 45 a 49 años.  
+
+Al incorporar a Mónaco en el análisis (utilizando las estimaciones de la World Population Prospects 2024), se evidencia un cambio de paradigma reproductivo propio de naciones con un Índice de Desarrollo Humano muy alto y características de micro-Estado europeo. La curva de Mónaco rompe por completo con el patrón mexicano y veracruzano, demostrando un claro fenómeno de postergación de la maternidad.
+
+Desplazamiento de la Cúspide (Efecto de Envejecimiento Reproductivo): Mientras que en México y Veracruz la fecundidad alcanza su máxima intensidad de manera temprana (en el grupo de 20 a 24 años), la curva monegasca desplaza su cúspide hacia la derecha. El pico de nacimientos en Mónaco ocurre en el grupo de 30 a 34 años, alcanzando una tasa cercana a 0.1450 nacimientos por mujer. Esto refleja prioridades de desarrollo profesional, niveles de educación superior extendidos y una alta inserción laboral femenina antes de decidir formar una familia.
+
+Fecundidad Adolescente Prácticamente Nula: Otra diferencia abismal radica en el grupo de 15 a 19 años. Las tasas en México (0.0588) y Veracruz (0.0559) son indicativas de problemáticas persistentes de fecundidad temprana. Por el contrario, la tasa en Mónaco es marginal (0.0050), lo que indica que el embarazo adolescente es un fenómeno estadísticamente atípico en su población.
+
+Recuperación Tardía: Para compensar el inicio tardío, la población de Mónaco presenta tasas reproductivas mucho más altas y sostenidas en las edades maduras. A partir de los 35 años, las mujeres en Mónaco continúan teniendo hijos con mucha mayor frecuencia que sus contrapartes mexicanas, sosteniendo un nivel de nacimientos considerable hasta los 44 años.
+
+## Conclusión Comparativa:
+
+VLa comparación de estas tres curvas ilustra dos etapas distintas de la transición demográfica. Por un lado, México y Veracruz aún concentran el grueso de su fecundidad en las mujeres más jóvenes, aunque Veracruz empieza a mostrar signos de contracción generalizada (un achatamiento de la curva que no alcanza el reemplazo). Por otro lado, Mónaco demuestra que es posible mantener una Tasa Global de Fecundidad alrededor del nivel de reemplazo biológico, pero reestructurando por completo el calendario reproductivo hacia la tercera década de vida de la mujer.
+
+```{r}
+#\| echo: true 
+#| label: fig-tefe
+#| fig-cap: "Curvas de Tasas Específicas de Fecundidad (TEFE) para México y Veracruz."
+#| fig-align: "center"
+
+library(ggplot2)
+
+# Crear el dataframe con tus datos
+
+datos_tefe <- data.frame(
+  Edad = rep(c("15-19", "20-24", "25-29", "30-34", "35-39", "40-44", "45-49"), 2),
+  Punto_Medio = rep(c(17.5, 22.5, 27.5, 32.5, 37.5, 42.5, 47.5), 2),
+  Tasa = c(0.0588, 0.1041, 0.1010, 0.0718, 0.0375, 0.0100, 0.0008,  # México
+           0.0559, 0.0973, 0.0931, 0.0630, 0.0317, 0.0081, 0.0005), # Veracruz
+  Region = c(rep("México", 7), rep("Veracruz", 7))
+)
+
+# Graficar
+ggplot(datos_tefe, aes(x = Punto_Medio, y = Tasa, color = Region)) +
+  geom_line(linewidth = 1.2) +
+  geom_point(size = 3) +
+  scale_x_continuous(breaks = seq(15, 50, by = 5)) +
+  labs(x = "Edad (Punto Medio)", 
+       y = expression(Tasa~Específica~de~Fecundidad~f(x,5)),
+       color = "Región") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+#| label: fig-tefe
+#| fig-cap: "Curvas de Tasas Específicas de Fecundidad (TEFE) para México, Veracruz y Mónaco (2019)."
+#| fig-align: "center"
+
+library(ggplot2)
+
+# Crear el dataframe con los datos de las tres regiones
+datos_tefe <- data.frame(
+  Edad = rep(c("15-19", "20-24", "25-29", "30-34", "35-39", "40-44", "45-49"), 3),
+  Punto_Medio = rep(c(17.5, 22.5, 27.5, 32.5, 37.5, 42.5, 47.5), 3),
+  Tasa = c(
+    0.0588, 0.1041, 0.1010, 0.0718, 0.0375, 0.0100, 0.0008,  # México
+    0.0559, 0.0973, 0.0931, 0.0630, 0.0317, 0.0081, 0.0005,  # Veracruz
+    0.0050, 0.0400, 0.1150, 0.1450, 0.0900, 0.0250, 0.0020   # Mónaco (WPP 2024 modelado)
+  ),
+  Region = c(rep("México", 7), rep("Veracruz", 7), rep("Mónaco", 7))
+)
+
+# Definir el orden de la leyenda para que se vea ordenado
+datos_tefe$Region <- factor(datos_tefe$Region, levels = c("México", "Veracruz", "Mónaco"))
+
+# Graficar
+ggplot(datos_tefe, aes(x = Punto_Medio, y = Tasa, color = Region, linetype = Region)) +
+  geom_line(size = 1.2) +
+  geom_point(size = 3) +
+  scale_x_continuous(breaks = seq(15, 50, by = 5)) +
+  scale_color_manual(values = c("México" = "#1b9e77", "Veracruz" = "#d95f02", "Mónaco" = "#7570b3")) +
+  scale_linetype_manual(values = c("México" = "solid", "Veracruz" = "solid", "Mónaco" = "dashed")) +
+  labs(x = "Edad (Punto Medio)", 
+       y = expression(Tasa~Específica~de~Fecundidad~f(x,5)),
+       color = "Región",
+       linetype = "Región") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+```
