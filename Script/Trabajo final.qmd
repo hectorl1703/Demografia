@@ -7,7 +7,7 @@ format: pdf
 editor: visual
 ---
 
-## a)Observaciones comentadas
+# a)Observaciones comentadas
 
 ## Presentación
 
@@ -435,7 +435,18 @@ De acuerdo con los requerimientos metodológicos, la tabla de vida completa de c
 
 A continuación, se presentan los análisis gráficos correspondientes al impacto directo de la eliminación de las muertes por homicidio sobre las probabilidades de muerte ($q_x$) y la esperanza de vida restante ($e_x$) en el estado de Veracruz.
 
-## b)Tabla de vida de Causa Eliminada
+# b)Tabla de vida de Causa Eliminada
+
+Para la construcción de la tabla de vida de causa eliminada para el estado de Veracruz (2019) realizamos un procesamiento a partir de las bases de datos oficiales y la aplicación de métodos de decrementos múltiples.
+
+El proceso se realizo a partir de las siguientes etapas: 
+
+1. **Extracción y agrupación:** Se descargaron los registros de defunciones generales y defunciones por homicidios del INEGI, estructurándolos por grupos quinquenales de edad y sexo mediante el uso de tablas dinámicas. 
+
+2. **Doble Prorrateo:** Se realizo el prorrateo de las defunciones con "Edad no especificada" entre todos los grupos quinquenales, garantizando que no se perdiera ningún evento del universo total. 
+
+3. **Método de Chiang (Causa Eliminada):** Partiendo de las tablas de vida base generadas mediante R en nuestro inciso a, se calculó la proporción de defunciones por homicidios sobre el total de muertes para cada grupo de edad. Esta proporción se utilizó para "extraer" el efecto de los homicidios de la probabilidad de muerte original ($q_x$), generando las nuevas probabilidades libres de homicidios ($q_x^{-i}$) y recalculamos toda la estructura de la tabla
+Toda la memoria de cálculo, las fórmulas actuariales dinámicas y el prorrateo detallado se encuentran en el archivo de Excel alojado en la carpeta `data` de nuestro repositorio de GitHub en la siguiente ruta: `data/Tabla de vida Causa eliminada.xlsx`.
 
 ::: {#fig-analisis-homicidios layout="[[1,1], [1]]"}
 ![Probabilidades de Muerte $q_x$ - Hombres](C:/Users/hecto/OneDrive/Documents/Demografia/images/grafica_qx_homicidios_hombres.png){#fig-qx-h}
@@ -468,7 +479,7 @@ Por el contrario, la población de **mujeres** exhibe una ganancia marginal. Est
 
 Como se aprecia en la curva de esperanza de vida restante (@fig-ex-comp), la brecha (o ganancia en años de vida) es sumamente ancha en las edades tempranas y se va estrechando paulatinamente conforme se avanza hacia las edades senectas. Esto confirma un comportamiento típicamente actuarial: el homicidio trunca vidas en etapas tempranas (reproductivas y económicamente activas) afectando los años-persona acumulados a edades jóvenes, pero deja de tener un peso estadístico significativo en el desgaste biológico natural de la vejez, donde ambas curvas terminan por converger.
 
-## c) Demostración de la Tasa de reemplazo
+# c) Demostración de la Tasa de reemplazo
 
 Para comprender que es la Tasa de Reemplazo Poblacional, primero hay que comenzar analizando las tasas de fecundidad, y es que mientras los países siguen desarrollandose, las tasas de fecundidad tienden a las tasas de reemplazo.
 
@@ -553,36 +564,39 @@ https://energyeducation.ca/encyclopedia/Population_replacement_rate
 https://www.youtube.com/watch?v=JdHCQZsVfmc&t=3s
 
 
-## d)Análisis Demográfico de la Causa y Reemplazo
+# d)Análisis Demográfico de la Causa y Reemplazo
 El análisis de las medidas de fecundidad revela el profundo y diferenciado impacto que tienen las tendencias reproductivas actuales sobre la estructura demográfica de la entidad federativa respecto a la nación:
 
-# 1. Contracción en la Natalidad y Fecundidad General
+## 1. Contracción en la Natalidad y Fecundidad General
 
 Al revisar los indicadores generales, es evidente que Veracruz presenta una menor intensidad reproductiva que el resto del país.
 La Tasa Bruta de Natalidad (b) en el estado se sitúa en 14.27 nacimientos por cada 1,000 habitantes, una cifra notablemente inferior a los 17.28 nacimientos por cada 1,000 habitantes registrados a nivel nacional. Esta tendencia se corrobora con la Tasa de Fecundidad General (TFG): Veracruz presenta 51.49 nacimientos por cada 1,000 Mujeres en Edad Fértil (MEF), frente a los 57.90 del contexto nacional. Esto representa una diferencia relativa del -11.06% para el estado.  
 
-# 2. Mitigación de la Cúspide Reproductiva ($f(x,5)$)
+## 2. Mitigación de la Cúspide Reproductiva ($f(x,5)$)
 
 La estructura de la fecundidad por grupos de edad mantiene un comportamiento típicamente demográfico en forma de "campana" para ambas poblaciones, pero con intensidades distintas:Cúspide de Fecundidad: La mayor probabilidad de dar a luz se concentra fuertemente en el grupo de 20 a 24 años. En México, la tasa es de 0.1041 nacimientos por mujer , mientras que la curva en Veracruz se deprime ligeramente a 0.0973. Le sigue el grupo de 25 a 29 años, donde las tasas inician su descenso.
 
 Fecundidad Adolescente: En el grupo temprano (15 a 19 años), México exhibe una tasa de 0.0588. Para Veracruz, la cifra es de 0.0559, evidenciando que, si bien es menor, existe un aporte estadísticamente significativo de las madres jóvenes al volumen total de nacimientos.
 
-# 3. Tasa Global de Fecundidad (TGF) y el Umbral de Reemplazo
+## 3. Tasa Global de Fecundidad (TGF) y el Umbral de Reemplazo
 
 Uno de los hallazgos más contundentes es la caída de la fecundidad por debajo del umbral de reemplazo poblacional (fijado teóricamente en 2.1 hijos por mujer).A nivel nacional, la TGF calculada es de 1.92 hijos por mujer.  En el caso de Veracruz, la TGF cae de manera más acentuada hasta 1.75 hijos por mujer.
 Esto evidencia de forma contundente que el estado no está logrando el reemplazo generacional. A largo plazo, esto actuará como un catalizador para el envejecimiento de la población veracruzana y promoverá la tasa negativa de crecimiento mencionada en contextos anteriores.
 
-# 4. Tasas de Reproducción Femenina (TBR y TNR)
+## 4. Tasas de Reproducción Femenina (TBR y TNR)
 
 Para comprender cabalmente la Tasa de Reemplazo Poblacional, es indispensable analizar a la cohorte de hijas que sobrevivirán para sustituir a sus madres .
 Tasa Bruta de Reproducción (TBR): Sin tomar en cuenta el factor de fallecimientos, una mujer mexicana tendría en promedio 0.946 hijas , mientras que en Veracruz este número desciende a 0.862 hijas. 
 Tasa Neta de Reproducción (TNR): Al ajustar las cuentas considerando a las mujeres que fallecen antes de concluir su periodo reproductivo (empleando los Años-Persona Vividos, $L_x$), la TNR de México es de 0.925. Sin embargo, la TNR de Veracruz cae abruptamente a 0.168 , marcando una diferencia relativa del -81.76% respecto al país. Un resultado tan alejado de 1 (donde cada madre es reemplazada por una única hija) sugiere no solo un bajo nacimiento de niñas, sino un fuerte castigo actuarial por la mortalidad femenina en edades tempranas y reproductivas dentro del estado.  
 
-# Conclusión
+## Conclusión
 
 Los resultados de este modelo confirman la severa vulnerabilidad demográfica de Veracruz. La entidad exhibe un truncamiento prematuro de su fecundidad que le impide alcanzar los niveles de reemplazo biológico de la nación. Esto deja en evidencia que el estado requerirá de un análisis profundo sobre el futuro de su estructura de edades, ya que una base poblacional cada vez más estrecha (menos nacimientos) deberá sostener a los grupos de edad avanzada en las próximas décadas.
 
-## e) Tasas específicas de fecundidad
+![Graficas de fecundidad](C:\Users\hecto\OneDrive\Documents\Demografia\images\graficas_fecundidad.png)
+
+
+# e) Tasas específicas de fecundidad
 
 Análisis de las Curvas de Fecundidad (TEFE):
 Al graficar las Tasas Específicas de Fecundidad ($f(x,5)$) para México y el estado de Veracruz, se aprecian patrones demográficos consistentes en cuanto a la distribución por edades, pero con brechas significativas en la intensidad reproductiva general.
