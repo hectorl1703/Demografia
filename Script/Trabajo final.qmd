@@ -7,15 +7,13 @@ format: pdf
 editor: visual
 ---
 
-# Trabajo final
-
-## Monsalvo Velázquez Naomi Adai & López Domínguez Héctor
+## a)Observaciones comentadas
 
 ## Presentación
 
 Este documento describirá y dará a conocer el contexto, la construcción de las tablas de vida y un análisis a detalle del estado de Veracruz de Ignacio de la Llave durante los años 2010, 2019 y 2021. Se comenzará por dar un contexto sobre la población de la entidad, que eventos la han alterado, sus características demográficas; a partir de allí se darán fórmulas, tablas de vida, cuadros de esperanzas, código para los cálculos que permitirán observar este contexto desde un unto de vista estadístico. Finalmente, un análisis de datos será hecho, haciendo un énfasis en el impacto observado durante la pandemia de COVID-19 en la mortalidad y la esperanza de vida de la región.
 
-## a) Breve contexto de la entidad federativa
+## I) Breve contexto de la entidad federativa
 
 Al ser el 11° estado con mayor superficie, el estado de Veracruz cuenta con una gran población. Según el Censo de Población de 2020, 8,062,579 personas habitan en los 71,823.5 km² de extensión territorial,una tasa de crecimiento de 5.49% respecto a los 7,643,194 habitantes que se obtuvieron en 2010. Esta tasa evidencia un gran crecimiento poblacional, sin embargo, en tiempos recientes se han llegado a estimar tasas negativas de crecimiento para años venideros. Existen distintos motivos para ambas ocurriencias:
 
@@ -27,7 +25,7 @@ Al ser el 11° estado con mayor superficie, el estado de Veracruz cuenta con una
 
 • Relacionado con el punto anterior, las muertes más comunes en el estado para ambos sexos incluyen enfermedades de corazón, diabetes, tumores malignos y enfermedades de hígado, más comunes en personas de edad avanzada, liderando en la tasa bruta de mortalidad por diabetes por cada 100000 habitantes, donde Veracruz, con 130.8 fallecimientos supera con creces a la media nacional, de 86.6.
 
-## b) Diagrama de flujo del proceso de construcción de las tablas de vida
+## II) Diagrama de flujo del proceso de construcción de las tablas de vida
 
 ### i) Construcción de las Tablas de Vida
 
@@ -35,42 +33,8 @@ El proceso para la construcción de las tablas de vida se detalla en el siguient
 
 ![Diagrama de flujo detallado del procesamiento de datos para la construcción de tablas de vida, desde la búsqueda de información en INEGI hasta la esperanza de vida final.](images/diagrama_flujo.png){#fig-diagrama-flujo fig-align="center" width=80%}
 
-De acuerdo con los requerimientos metodológicos, la tabla de vida completa de causa eliminada para el año 2019 (por sexo) se encuentra estructurada con sus fórmulas actuariales dinámicas dentro del archivo de Excel en la ruta del repositorio: `output/Homicidios, ver.xlsx`.
 
-A continuación, se presentan los análisis gráficos correspondientes al impacto directo de la eliminación de las muertes por homicidio sobre las probabilidades de muerte ($q_x$) y la esperanza de vida restante ($e_x$) en el estado de Veracruz.
-
-::: {#fig-analisis-homicidios layout="[[1,1], [1]]"}
-![Probabilidades de Muerte $q_x$ - Hombres](C:/Users/hecto/OneDrive/Documents/Demografia/images/grafica_qx_homicidios_hombres.png){#fig-qx-h}
-
-![Probabilidades de Muerte $q_x$ - Mujeres](C:/Users/hecto/OneDrive/Documents/Demografia/images/grafica_qx_homicidios_Mujeres.png){#fig-qx-m}
-
-![Comparación de la Esperanza de Vida Restante $e_x$](C:/Users/hecto/OneDrive/Documents/Demografia/images/grafica_ex_homicidios.png){#fig-ex-comp width="65%"}
-
-Impacto demográfico y curvas biométricas tras la exclusión de homicidios en Veracruz, 2019.
-:::
-
-------------------------------------------------------------------------
-
-### Análisis Demográfico y Actuarial de la Causa Eliminada
-
-El análisis de decrementos múltiples para el año 2019 revela el profundo y diferenciado impacto que la violencia (homicidios) ejerce sobre la estructura de la mortalidad según el sexo en la entidad federativa:
-
-#### 1. Ganancia en la Esperanza de Vida al Nacer ($e_0$)
-
-Al revisar los datos de la memoria de cálculo interactiva reflejados en la @fig-ex-comp, la exclusión de los homicidios genera un incremento masivo en la esperanza de vida al nacer de los **hombres**, la cual muestra una ganancia exacta de **1.68 años** (pasando de un nivel observado de **72.63 años** a un nivel teórico de **74.31 años**).
-
-Por el contrario, la población de **mujeres** exhibe una ganancia marginal. Esto evidencia de forma contundente que el fenómeno de la violencia homicida en Veracruz actúa como un choque exógeno que penaliza de manera casi exclusiva a la población masculina.
-
-#### 2. Mitigación del "Efecto Joroba" en Adultos Jóvenes
-
--   **Población Masculina (@fig-qx-h):** La curva original de los hombres presenta una sobromortalidad joven sumamente marcada (conocida en demografía como *bump* o joroba de mortalidad) entre los 15 y los 40 años de edad. Al eliminar la causa de homicidios, la curva (*línea corregida*) se deprime drásticamente. Por ejemplo, en el grupo de edad de 20 a 24 años, la probabilidad original disminuye sustancialmente, demostrando que el exceso de riesgo en estas edades no obedece a factores biológicos o de desgaste natural, sino a factores del entorno social.
--   **Población Femenina (@fig-qx-m):** La comparación de las curvas para las mujeres muestra que la línea original y la corregida son prácticamente idénticas a lo largo de todo el ciclo vital. No existe una "joroba" visible en las edades jóvenes, lo que confirma que la estructura de la mortalidad femenina se mantiene gobernada por causas biológicas, crónico-degenerativas y de envejecimiento natural.
-
-#### 3. Comportamiento por Edades Avanzadas
-
-Como se aprecia en la curva de esperanza de vida restante (@fig-ex-comp), la brecha (o ganancia en años de vida) es sumamente ancha en las edades tempranas y se va estrechando paulatinamente conforme se avanza hacia las edades senectas. Esto confirma un comportamiento típicamente actuarial: el homicidio trunca vidas en etapas tempranas (reproductivas y económicamente activas) afectando los años-persona acumulados a edades jóvenes, pero deja de tener un peso estadístico significativo en el desgaste biológico natural de la vejez, donde ambas curvas terminan por converger.
-
-## c) Fórmulas utilizadas
+## III) Fórmulas utilizadas
 
 ### i) Fórmulas del crecimiento exponencial
 
@@ -128,7 +92,7 @@ Para aislar el impacto epidemiológico y actuarial de una causa exógena especí
 
 -   $e_x^{-i}$: esperanza de vida restante a la edad exacta $x$ tras haber excluido el riesgo de morir por la causa específica $i$: $$e_x^{-i} = \frac{T_{x}^{-i}}{l_{x}^{-i}}$$
 
-## d) Código usado para los cálculos
+## IV) Código usado para los cálculos
 
 ### i) Obtención de los datos
 
@@ -219,7 +183,7 @@ imprimir_tabla_vida(lt_2021_m, "Tabla de Mortalidad - Mujeres Veracruz 2021")
 
 ```
 
-## e) Cuadro de esperanzas de vida
+### v) Cuadro de esperanzas de vida
 
 ```{r}
 #\| echo: true 
@@ -304,7 +268,7 @@ kable(cuadro_e0,
   column_spec(1, bold = TRUE)
 ```
 
-## f) Gráficas del informe
+### vi) Gráficas del informe
 
 Para analizar visualmente el comportamiento de la mortalidad y el impacto de la pandemia de COVID-19 en Veracruz, graficaremos las funciones más importantes de nuestra tabla de vida.
 
@@ -440,7 +404,7 @@ legend("bottomleft", legend = c("2010", "2019", "2021"),
 par(mfrow = c(1, 1))
 ```
 
-## g) Análisis de resultados y particularidades
+### vii) Análisis de resultados y particularidades
 
 **Tendencia histórica (2010 - 2019)** Entre 2010 y 2019, la esperanza de vida al nacer ($e_0$) en Veracruz muestra una dinámica coherente con el patrón demográfico nacional, caracterizada por avances paulatinos pero enfrentando el reto del envejecimiento poblacional. Las mujeres presentan de forma sistemática una esperanza de vida superior a la de los hombres. Esta brecha de género refleja:
 
@@ -476,10 +440,44 @@ En términos demográficos, la pandemia representó un choque exógeno severo qu
 
 • La pandemia de COVID-19 en 2021 tuvo un impacto devastador, elevando sustancialmente la mortalidad en edades productivas y avanzadas, y contrayendo la esperanza de vida, dejando en evidencia la vulnerabilidad sanitaria de la población veracruzana frente a crisis epidemiológicas.
 
+De acuerdo con los requerimientos metodológicos, la tabla de vida completa de causa eliminada para el año 2019 (por sexo) se encuentra estructurada con sus fórmulas actuariales dinámicas dentro del archivo de Excel en la ruta del repositorio: `output/Homicidios, ver.xlsx`.
 
+A continuación, se presentan los análisis gráficos correspondientes al impacto directo de la eliminación de las muertes por homicidio sobre las probabilidades de muerte ($q_x$) y la esperanza de vida restante ($e_x$) en el estado de Veracruz.
 
-Punto c:
-Demostración de la Tasa de Reemplazo.
+## b)Tabla de vida de Causa Eliminada
+
+::: {#fig-analisis-homicidios layout="[[1,1], [1]]"}
+![Probabilidades de Muerte $q_x$ - Hombres](C:/Users/hecto/OneDrive/Documents/Demografia/images/grafica_qx_homicidios_hombres.png){#fig-qx-h}
+
+![Probabilidades de Muerte $q_x$ - Mujeres](C:/Users/hecto/OneDrive/Documents/Demografia/images/grafica_qx_homicidios_Mujeres.png){#fig-qx-m}
+
+![Comparación de la Esperanza de Vida Restante $e_x$](C:/Users/hecto/OneDrive/Documents/Demografia/images/grafica_ex_homicidios.png){#fig-ex-comp width="65%"}
+
+Impacto demográfico y curvas biométricas tras la exclusión de homicidios en Veracruz, 2019.
+:::
+
+------------------------------------------------------------------------
+
+### Análisis Demográfico y Actuarial de la Causa Eliminada
+
+El análisis de decrementos múltiples para el año 2019 revela el profundo y diferenciado impacto que la violencia (homicidios) ejerce sobre la estructura de la mortalidad según el sexo en la entidad federativa:
+
+#### 1. Ganancia en la Esperanza de Vida al Nacer ($e_0$)
+
+Al revisar los datos de la memoria de cálculo interactiva reflejados en la @fig-ex-comp, la exclusión de los homicidios genera un incremento masivo en la esperanza de vida al nacer de los **hombres**, la cual muestra una ganancia exacta de **1.68 años** (pasando de un nivel observado de **72.63 años** a un nivel teórico de **74.31 años**).
+
+Por el contrario, la población de **mujeres** exhibe una ganancia marginal. Esto evidencia de forma contundente que el fenómeno de la violencia homicida en Veracruz actúa como un choque exógeno que penaliza de manera casi exclusiva a la población masculina.
+
+#### 2. Mitigación del "Efecto Joroba" en Adultos Jóvenes
+
+-   **Población Masculina (@fig-qx-h):** La curva original de los hombres presenta una sobromortalidad joven sumamente marcada (conocida en demografía como *bump* o joroba de mortalidad) entre los 15 y los 40 años de edad. Al eliminar la causa de homicidios, la curva (*línea corregida*) se deprime drásticamente. Por ejemplo, en el grupo de edad de 20 a 24 años, la probabilidad original disminuye sustancialmente, demostrando que el exceso de riesgo en estas edades no obedece a factores biológicos o de desgaste natural, sino a factores del entorno social.
+-   **Población Femenina (@fig-qx-m):** La comparación de las curvas para las mujeres muestra que la línea original y la corregida son prácticamente idénticas a lo largo de todo el ciclo vital. No existe una "joroba" visible en las edades jóvenes, lo que confirma que la estructura de la mortalidad femenina se mantiene gobernada por causas biológicas, crónico-degenerativas y de envejecimiento natural.
+
+#### 3. Comportamiento por Edades Avanzadas
+
+Como se aprecia en la curva de esperanza de vida restante (@fig-ex-comp), la brecha (o ganancia en años de vida) es sumamente ancha en las edades tempranas y se va estrechando paulatinamente conforme se avanza hacia las edades senectas. Esto confirma un comportamiento típicamente actuarial: el homicidio trunca vidas en etapas tempranas (reproductivas y económicamente activas) afectando los años-persona acumulados a edades jóvenes, pero deja de tener un peso estadístico significativo en el desgaste biológico natural de la vejez, donde ambas curvas terminan por converger.
+
+## c) Demostración de la Tasa de reemplazo
 
 Para comprender que es la Tasa de Reemplazo Poblacional, primero hay que comenzar analizando las tasas de fecundidad, y es que mientras los países siguen desarrollandose, las tasas de fecundidad tienden a las tasas de reemplazo.
 
@@ -562,3 +560,128 @@ https://askfilo.com/user-question-answers-smart-solutions/what-is-the-formula-of
 https://energyeducation.ca/encyclopedia/Population_replacement_rate
 
 https://www.youtube.com/watch?v=JdHCQZsVfmc&t=3s
+
+
+## d)Análisis Demográfico de la Causa y Reemplazo
+El análisis de las medidas de fecundidad revela el profundo y diferenciado impacto que tienen las tendencias reproductivas actuales sobre la estructura demográfica de la entidad federativa respecto a la nación:
+
+# 1. Contracción en la Natalidad y Fecundidad General
+
+Al revisar los indicadores generales, es evidente que Veracruz presenta una menor intensidad reproductiva que el resto del país.
+La Tasa Bruta de Natalidad (b) en el estado se sitúa en 14.27 nacimientos por cada 1,000 habitantes, una cifra notablemente inferior a los 17.28 nacimientos por cada 1,000 habitantes registrados a nivel nacional. Esta tendencia se corrobora con la Tasa de Fecundidad General (TFG): Veracruz presenta 51.49 nacimientos por cada 1,000 Mujeres en Edad Fértil (MEF), frente a los 57.90 del contexto nacional. Esto representa una diferencia relativa del -11.06% para el estado.  
+
+# 2. Mitigación de la Cúspide Reproductiva ($f(x,5)$)
+
+La estructura de la fecundidad por grupos de edad mantiene un comportamiento típicamente demográfico en forma de "campana" para ambas poblaciones, pero con intensidades distintas:Cúspide de Fecundidad: La mayor probabilidad de dar a luz se concentra fuertemente en el grupo de 20 a 24 años. En México, la tasa es de 0.1041 nacimientos por mujer , mientras que la curva en Veracruz se deprime ligeramente a 0.0973. Le sigue el grupo de 25 a 29 años, donde las tasas inician su descenso.
+
+Fecundidad Adolescente: En el grupo temprano (15 a 19 años), México exhibe una tasa de 0.0588. Para Veracruz, la cifra es de 0.0559, evidenciando que, si bien es menor, existe un aporte estadísticamente significativo de las madres jóvenes al volumen total de nacimientos.
+
+# 3. Tasa Global de Fecundidad (TGF) y el Umbral de Reemplazo
+
+Uno de los hallazgos más contundentes es la caída de la fecundidad por debajo del umbral de reemplazo poblacional (fijado teóricamente en 2.1 hijos por mujer).A nivel nacional, la TGF calculada es de 1.92 hijos por mujer.  En el caso de Veracruz, la TGF cae de manera más acentuada hasta 1.75 hijos por mujer.
+Esto evidencia de forma contundente que el estado no está logrando el reemplazo generacional. A largo plazo, esto actuará como un catalizador para el envejecimiento de la población veracruzana y promoverá la tasa negativa de crecimiento mencionada en contextos anteriores.
+
+# 4. Tasas de Reproducción Femenina (TBR y TNR)
+
+Para comprender cabalmente la Tasa de Reemplazo Poblacional, es indispensable analizar a la cohorte de hijas que sobrevivirán para sustituir a sus madres .
+Tasa Bruta de Reproducción (TBR): Sin tomar en cuenta el factor de fallecimientos, una mujer mexicana tendría en promedio 0.946 hijas , mientras que en Veracruz este número desciende a 0.862 hijas. 
+Tasa Neta de Reproducción (TNR): Al ajustar las cuentas considerando a las mujeres que fallecen antes de concluir su periodo reproductivo (empleando los Años-Persona Vividos, $L_x$), la TNR de México es de 0.925. Sin embargo, la TNR de Veracruz cae abruptamente a 0.168 , marcando una diferencia relativa del -81.76% respecto al país. Un resultado tan alejado de 1 (donde cada madre es reemplazada por una única hija) sugiere no solo un bajo nacimiento de niñas, sino un fuerte castigo actuarial por la mortalidad femenina en edades tempranas y reproductivas dentro del estado.  
+
+# Conclusión
+
+Los resultados de este modelo confirman la severa vulnerabilidad demográfica de Veracruz. La entidad exhibe un truncamiento prematuro de su fecundidad que le impide alcanzar los niveles de reemplazo biológico de la nación. Esto deja en evidencia que el estado requerirá de un análisis profundo sobre el futuro de su estructura de edades, ya que una base poblacional cada vez más estrecha (menos nacimientos) deberá sostener a los grupos de edad avanzada en las próximas décadas.
+
+## e) Tasas específicas de fecundidad
+
+Análisis de las Curvas de Fecundidad (TEFE):
+Al graficar las Tasas Específicas de Fecundidad ($f(x,5)$) para México y el estado de Veracruz, se aprecian patrones demográficos consistentes en cuanto a la distribución por edades, pero con brechas significativas en la intensidad reproductiva general.
+
+### Estructura Cúspide y Forma de la Curva: 
+
+Ambas regiones presentan una curva asimétrica orientada hacia la izquierda (fecundidad temprana), alcanzando su pico máximo en el grupo quinquenal de 20 a 24 años. En México, la tasa máxima es de 0.1041 nacimientos por mujer en este grupo, mientras que en Veracruz el pico se mitiga a 0.0973 nacimientos.  
+
+### Achatamiento de la Curva Estatal: 
+
+A lo largo de todo el periodo reproductivo (de los 15 a los 49 años), la curva de Veracruz transcurre de forma paralela pero consistentemente por debajo de la curva nacional. Esta brecha es particularmente visible en la etapa de máxima madurez reproductiva (25 a 34 años). Por ejemplo, en el grupo de 25 a 29 años, la tasa de México es de 0.1010, contrastando fuertemente con el 0.0931 del estado de Veracruz.  
+
+### Fecundidad Adolescente y Fecundidad Tardía: 
+
+En los extremos reproductivos, las diferencias absolutas parecen menores, pero sus implicaciones son profundas. La fecundidad adolescente (15 a 19 años) representa un volumen importante de los nacimientos en ambos casos, siendo marginalmente menor en Veracruz (0.0559) frente a la media del país (0.0588). A partir de los 35 años, ambas curvas decaen aceleradamente, convergiendo casi a cero en el grupo de 45 a 49 años.  
+
+Al incorporar a Mónaco en el análisis (utilizando las estimaciones de la World Population Prospects 2024), se evidencia un cambio de paradigma reproductivo propio de naciones con un Índice de Desarrollo Humano muy alto y características de micro-Estado europeo. La curva de Mónaco rompe por completo con el patrón mexicano y veracruzano, demostrando un claro fenómeno de postergación de la maternidad.
+
+Desplazamiento de la Cúspide (Efecto de Envejecimiento Reproductivo): Mientras que en México y Veracruz la fecundidad alcanza su máxima intensidad de manera temprana (en el grupo de 20 a 24 años), la curva monegasca desplaza su cúspide hacia la derecha. El pico de nacimientos en Mónaco ocurre en el grupo de 30 a 34 años, alcanzando una tasa cercana a 0.1450 nacimientos por mujer. Esto refleja prioridades de desarrollo profesional, niveles de educación superior extendidos y una alta inserción laboral femenina antes de decidir formar una familia.
+
+Fecundidad Adolescente Prácticamente Nula: Otra diferencia abismal radica en el grupo de 15 a 19 años. Las tasas en México (0.0588) y Veracruz (0.0559) son indicativas de problemáticas persistentes de fecundidad temprana. Por el contrario, la tasa en Mónaco es marginal (0.0050), lo que indica que el embarazo adolescente es un fenómeno estadísticamente atípico en su población.
+
+Recuperación Tardía: Para compensar el inicio tardío, la población de Mónaco presenta tasas reproductivas mucho más altas y sostenidas en las edades maduras. A partir de los 35 años, las mujeres en Mónaco continúan teniendo hijos con mucha mayor frecuencia que sus contrapartes mexicanas, sosteniendo un nivel de nacimientos considerable hasta los 44 años.
+
+## Conclusión Comparativa:
+
+VLa comparación de estas tres curvas ilustra dos etapas distintas de la transición demográfica. Por un lado, México y Veracruz aún concentran el grueso de su fecundidad en las mujeres más jóvenes, aunque Veracruz empieza a mostrar signos de contracción generalizada (un achatamiento de la curva que no alcanza el reemplazo). Por otro lado, Mónaco demuestra que es posible mantener una Tasa Global de Fecundidad alrededor del nivel de reemplazo biológico, pero reestructurando por completo el calendario reproductivo hacia la tercera década de vida de la mujer.
+
+```{r}
+#\| echo: true 
+#| label: fig-tefe
+#| fig-cap: "Curvas de Tasas Específicas de Fecundidad (TEFE) para México y Veracruz."
+#| fig-align: "center"
+
+library(ggplot2)
+
+# Crear el dataframe con tus datos
+
+datos_tefe <- data.frame(
+  Edad = rep(c("15-19", "20-24", "25-29", "30-34", "35-39", "40-44", "45-49"), 2),
+  Punto_Medio = rep(c(17.5, 22.5, 27.5, 32.5, 37.5, 42.5, 47.5), 2),
+  Tasa = c(0.0588, 0.1041, 0.1010, 0.0718, 0.0375, 0.0100, 0.0008,  # México
+           0.0559, 0.0973, 0.0931, 0.0630, 0.0317, 0.0081, 0.0005), # Veracruz
+  Region = c(rep("México", 7), rep("Veracruz", 7))
+)
+
+# Graficar
+ggplot(datos_tefe, aes(x = Punto_Medio, y = Tasa, color = Region)) +
+  geom_line(linewidth = 1.2) +
+  geom_point(size = 3) +
+  scale_x_continuous(breaks = seq(15, 50, by = 5)) +
+  labs(x = "Edad (Punto Medio)", 
+       y = expression(Tasa~Específica~de~Fecundidad~f(x,5)),
+       color = "Región") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+#| label: fig-tefe
+#| fig-cap: "Curvas de Tasas Específicas de Fecundidad (TEFE) para México, Veracruz y Mónaco (2019)."
+#| fig-align: "center"
+
+library(ggplot2)
+
+# Crear el dataframe con los datos de las tres regiones
+datos_tefe <- data.frame(
+  Edad = rep(c("15-19", "20-24", "25-29", "30-34", "35-39", "40-44", "45-49"), 3),
+  Punto_Medio = rep(c(17.5, 22.5, 27.5, 32.5, 37.5, 42.5, 47.5), 3),
+  Tasa = c(
+    0.0588, 0.1041, 0.1010, 0.0718, 0.0375, 0.0100, 0.0008,  # México
+    0.0559, 0.0973, 0.0931, 0.0630, 0.0317, 0.0081, 0.0005,  # Veracruz
+    0.0050, 0.0400, 0.1150, 0.1450, 0.0900, 0.0250, 0.0020   # Mónaco (WPP 2024 modelado)
+  ),
+  Region = c(rep("México", 7), rep("Veracruz", 7), rep("Mónaco", 7))
+)
+
+# Definir el orden de la leyenda para que se vea ordenado
+datos_tefe$Region <- factor(datos_tefe$Region, levels = c("México", "Veracruz", "Mónaco"))
+
+# Graficar
+ggplot(datos_tefe, aes(x = Punto_Medio, y = Tasa, color = Region, linetype = Region)) +
+  geom_line(size = 1.2) +
+  geom_point(size = 3) +
+  scale_x_continuous(breaks = seq(15, 50, by = 5)) +
+  scale_color_manual(values = c("México" = "#1b9e77", "Veracruz" = "#d95f02", "Mónaco" = "#7570b3")) +
+  scale_linetype_manual(values = c("México" = "solid", "Veracruz" = "solid", "Mónaco" = "dashed")) +
+  labs(x = "Edad (Punto Medio)", 
+       y = expression(Tasa~Específica~de~Fecundidad~f(x,5)),
+       color = "Región",
+       linetype = "Región") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+```
