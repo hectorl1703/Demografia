@@ -235,15 +235,6 @@ cuadro_e0 <- data.frame(
 
 colnames(cuadro_e0) <- c("Año", "Hombres", "Mujeres")
 
-# Imprimimos el cuadro de solo las esperanzas de vida al nacer 
-kable(cuadro_e0, 
-      caption = "Esperanza de Vida al Nacer (e0) en Veracruz por Sexo y Año", 
-      align = 'c') |>
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), 
-                full_width = FALSE, 
-                position = "center") |>
-  row_spec(0, bold = TRUE, color = "white", background = "#2C3E50") |> 
-  column_spec(1, bold = TRUE)
 # Extraemos la esperanza de vida al nacer (x=0) de las tablas previamente calculadas
 e0_2010_h <- lt_2010_h$ex[1]
 e0_2010_m <- lt_2010_m$ex[1]
