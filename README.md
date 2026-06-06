@@ -1,66 +1,58 @@
-# Construcción de Tablas de Vida y Análisis de Indicadores de Fecundidad: Veracruz (2010, 2019, 2021)
-
 ### Proyecto Final - Demografía II
-**Autores:** * Naomi Adai Monsalvo Velázquez
-* Héctor López Domínguez
-
----
+## Autores
+- Monsalvo Velázquez Naomi Adai
+- López Domínguez Héctor
 
 ## Descripción del Proyecto
-Este repositorio contiene la memoria de cálculo, los scripts de automatización y el informe actuarial definitivo en PDF sobre la evolución demográfica del estado de **Veracruz de Ignacio de la Llave** para los años **2010, 2019 y 2021**. 
+Este repositorio contiene el código, la fundamentación matemática y el análisis demográfico completo del estado de Veracruz de Ignacio de la Llave. El proyecto tiene como eje central estimar la esperanza de vida al nacer y analizar la evolución de la mortalidad, con especial atención al impacto demográfico y epidemiológico de la COVID-19 en 2021, integrando a su vez un estudio riguroso sobre la dinámica de la fecundidad en la región bajo un estricto orden metodológico y de organización de datos.
 
-El proyecto está diseñado bajo los más estrictos criterios de **reproducibilidad y transparencia metodológica**, permitiendo al cliente comprender a detalle la transición epidemiológica (incluyendo el impacto de la pandemia de COVID-19), el modelado de decrementos múltiples por causas exógenas (homicidios) y el comportamiento histórico de la fecundidad en la región comparada con el contexto nacional e internacional.
+En cuanto al análisis de **mortalidad**, se construyeron Tablas de Vida para los años 2010, 2019 y 2021. Se incluye la versión definitiva del código en R, todas las expresiones matemáticas utilizadas, un diagrama de flujo metodológico corregido (con inicio y fin), cuadros resumidos de las esperanzas de vida al nacer por sexo/año y las tablas insertadas directamente en el reporte. Adicionalmente, se presenta el impacto actuarial de los homicidios en 2019 mediante una tabla de vida de *causa eliminada* (decrementos múltiples), evaluando gráficamente las probabilidades de muerte ($q_x$) y esperanzas de vida ($e_0$) por sexo.
 
----
+En cuanto a la **fecundidad**, el trabajo documenta la demostración analítica de por qué la Tasa de Reemplazo es igual a 2.1. Asimismo, detalla el cálculo, análisis y evolución histórica (2010 vs. 2019) de las Tasas Globales de Fecundidad (TGF), Tasas Brutas de Reproducción (TBR) y Tasas Netas de Reproducción (TNR). Finalmente, incluye la modelación y graficación con títulos normativos (*captions*) de las curvas de Tasas Específicas de Fecundidad (TEF), contrastando a Veracruz con el promedio nacional de México y Mónaco.
 
 ## Estructura del Repositorio
 
-El proyecto se encuentra organizado de acuerdo con las mejores prácticas de gestión de código y reproducibilidad:
+A continuación se describe la organización de los archivos e insumos de este proyecto:
 
 ```text
-├── data/                                 # Datos crudos y memorias de cálculo en Excel
-│   ├── ProyectoFinal_avance_LópezMonsalvo.xlsx  # Memoria definitiva: Prorrateos, APV y Tasas Mx
-│   ├── Homicidios_ver.xlsx               # Memoria definitiva: Causa eliminada (Homicidios 2019)
+├── data/                                 # Bases de datos y memorias de cálculo
 │   ├── APV_2010-2019-2021.csv            # Datos limpios de Años-Persona Vividos
-│   └── Deaths_Ver_2010-2019-2021.csv     # Datos limpios de Defunciones Generales
-├── script/                               # Código fuente de automatización
-│   └── Reporte_Final_Demografia.qmd      # Archivo fuente en Quarto (.qmd) que genera el PDF
+│   ├── Deaths_Ver_2010-2019-2021.csv     # Datos limpios de Defunciones Generales
+│   ├── Medidas_Fecundidad_MexVer.xlsx    # Reporte final de medidas de fecundidad
+│   ├── ProyectoFinal_avance_LópezMonsalvo (1).xlsx # Memoria de cálculo
+│   └── Tabla de vida Causa eliminada.xlsx # Memoria: Causa Eliminada (Homicidios)
 ├── images/                               # Gráficas y diagramas exportados
-│   ├── diagrama_flujo_tablas_vida.png    # Diagrama de flujo corregido (Inicio/Fin con óvalos)
+│   ├── diagrama_flujo.png                # Diagrama de flujo metodológico
+│   ├── grafica_ex_homicidios.png         # Comparación de Esperanza de vida (e_x)
+│   ├── grafica_qx_homicidios_Mujeres.png # Probabilidades de muerte sin homicidios (Mujeres)
 │   ├── grafica_qx_homicidios_hombres.png # Probabilidades de muerte sin homicidios (Hombres)
-│   ├── grafica_qx_homicidios_mujeres.png # Probabilidades de muerte sin homicidios (Mujeres)
-│   ├── grafica_ex_homicidios.png         # Comparación de Esperanza de vida con causa eliminada
-│   └── curvas_tefe_2019.png              # Curvas de Tasas Específicas de Fecundidad comparadas
-├── output/                               # Entregables finales para el cliente
-│   └── Reporte_Final_Demografia.pdf      # Informe actuarial definitivo compilado
+│   └── graficas_fecundidad.png           # Gráficas de fecundidad
+├── output/                               # Entregables finales
+│   └── Trabajo-final.pdf                 # Documento final en PDF (Versión entregada)
+├── .RDataTmp                             # Archivos temporales de entorno de R
+├── .gitignore                            # Archivo de exclusión de Git
+├── Demografia.Rproj                      # Archivo de entorno de RStudio
+└── README.md                             # Documentación principal del repositorio
+```
+## Contexto del Estudio
+Veracruz es el 11° estado con mayor superficie en México. Entre los hallazgos demográficos clave analizados en este proyecto destacan:
+* Un crecimiento poblacional del 5.49% entre 2010 y 2020 (llegando a 8,062,579 habitantes). Sin embargo, se prevén tasas de crecimiento negativo para años futuros
+* Factores migratorios internos movilizados por la pobreza marginal (norte a sur).
+* Una estructura de mortalidad dominada por enfermedades del corazón, tumores malignos y diabetes (tasa bruta de 130.8 por cada 100,000 habitantes, muy por encima de la media nacional).
 
-## Metodología y Alcance del Informe
+## Metodología y Flujo de Trabajo
+El procesamiento de los datos siguió un rigor metodológico estructurado en las siguientes etapas:
 
-El informe final consolidado en `output/Reporte_Final_Demografia.pdf` cubre los siguientes cinco ejes fundamentales requeridos:
+1. **Obtención de Datos:** Extracción de microdatos oficiales del INEGI correspondientes al Censo de Población y Vivienda (CPV) 2010 y 2020, y a las Estadísticas de Defunciones Registradas (EDR).
+2. **Preprocesamiento:** Agrupación de la población en intervalos de edad estándar (0 años, 1 a 4 años, y grupos quinquenales hasta el grupo abierto de 85 y más).
+3. **Prorrateo:** Redistribución proporcional de los registros con edades y sexos "no especificados" en cada año para evitar subestimaciones en la mortalidad.
+4. **Estimación de Años Persona Vividos (APV):** Se calculó usando tasas de crecimiento exponencial intercensal (r) y fracciones de tiempo a proyectar.
+5. **Construcción de Tablas de Vida Base:** Cálculo de tasas centrales de mortalidad (mx), probabilidades de fallecer (qx), sobrevivientes (lx), años-persona vividos (Lx) y esperanza de vida al nacer (ex).
+6. **Decrementos Múltiples (Causa Eliminada):** Aplicación de la metodología de Chiang para aislar y "eliminar" el riesgo de morir por homicidios en 2019, calculando nuevas probabilidades de supervivencia y esperanzas de vida teóricas.
 
-### a) Tablas de Vida Definitivas e Inclusión de Observaciones
-* **Flujo Metodológico:** Incorporación de un diagrama de flujo corregido utilizando la notación geométrica estándar (óvalos para Inicio/Fin, rectángulos para procesos de cálculo de $m_x, q_x, l_x, d_x, L_x, T_x, e_x$).
-* **Modelado Matemático y Código:** Documentación explícita de todas las fórmulas de crecimiento exponencial intercensal, prorrateo multiplicativo y relaciones actuariales de la tabla de vida, junto con el código definitivo en R para su total replicabilidad.
-* **Resultados Integrados:** Inclusión de las tablas de vida completas dentro del texto y un cuadro resumen con las esperanzas de vida al nacer ($e_0$) por sexo para analizar el severo choque exógeno de la pandemia de COVID-19 en 2021.
+## Herramientas y Requisitos
+El análisis computacional de las tablas de vida se programó en **R** y **Quarto**.
+Las librerías principales requeridas para ejecutar los scripts `.qmd` son:
+* `data.table`: Para el manejo eficiente, lectura y procesamiento de los microdatos.
+* `knitr` y `kableExtra`: Para la renderización y estilización avanzada de las tablas de vida en los reportes finales.
 
-### b) Tabla de Vida de Causa Eliminada (Homicidios 2019)
-* Modelado a través de decrementos múltiples en donde se aísla el impacto de la violencia en Veracruz para el año 2019.
-* El archivo dinámico interactivo con las fórmulas vivas se localiza en `data/Homicidios_ver.xlsx`. El informe PDF despliega exclusivamente el análisis demográfico profundo apoyado por las tres gráficas de la carpeta `images/` que contrastan el comportamiento de las curvas de mortalidad por sexo a escala logarítmica.
-
-### c) Demostración Matemática del Reemplazo Poblacional
-* Documentación formal y desarrollo algebraico de la demostración analítica que fundamenta por qué la **Tasa de Reemplazo Estándar es igual a 2.1** bajo condiciones demográficas contemporáneas (considerando la razón de masculinidad al nacer y las probabilidades de supervivencia materna).
-
-### d) Evolución de Indicadores de Fecundidad (2010 vs. 2019)
-* Estimación y análisis comparativo para Veracruz de los siguientes indicadores macro-demográficos:
-  * **TGF:** Tasa Global de Fecundidad (número promedio de hijos por mujer).
-  * **TBR:** Tasa Bruta de Reproducción (promedio de hijas nacidas por mujer).
-  * **TNR:** Tasa Neta de Reproducción (hijas promedio que sobrevivirán hasta la edad reproductiva de la madre).
-
-### e) Análisis Comparativo Internacional de las TEFE (2019)
-* Graficación y análisis de las **Tasas Específicas de Fecundidad (TEFE)** por grupos quinquenales de edad para el año 2019, contrastando de forma simultánea la estructura de la fecundidad de:
-  1. El estado de **Veracruz**.
-  2. El contexto nacional (**México**).
-  3. El país seleccionado para la comparación internacional.
-└── README.md                             # Portada de presentación del repositorio
-
-de la fecundidad de:El estado de Veracruz.El contexto nacional (México).El país seleccionado para la comparación internacional.
